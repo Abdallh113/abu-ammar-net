@@ -1,0 +1,7 @@
+{
+  "appId": "com.abuammar.net",
+  "appName": "Abu Ammar Net",
+  "webDir": "www",
+  "server": { "androidScheme": "https", "cleartext": true },
+  "plugins": { "CapacitorHttp": { "enabled": true } }
+}
