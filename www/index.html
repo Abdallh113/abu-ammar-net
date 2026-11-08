@@ -253,5 +253,80 @@ function settings(){
 }
 applyLic().then(()=>go("home"));
 </script>
+<script>
+(function(){
+var normIp=function(v){return String(v||"").trim().replace(/^https?:\/\//i,"").replace(/\/.*$/,"").replace(/\s+/g,"")};
+var b64u=function(t){return btoa(unescape(encodeURIComponent(t)))};
+var PUBDNS=["1.1.1.1","1.0.0.1","8.8.8.8","8.8.4.4","9.9.9.9"];
+var CANDS=["192.168.88.1","192.168.1.1","192.168.0.1","10.0.0.1","10.10.10.1","172.16.0.1","192.168.100.1"];
+function mkErr(msg,code){var e=new Error(msg);e.code=code;return e}
+async function probe(host,https,ms){var c=new AbortController(),t=setTimeout(function(){c.abort()},ms);try{var r=await fetch((https?"https":"http")+"://"+host+"/rest/system/resource",{headers:{Authorization:"Basic "+b64u(S.user+":"+S.pass)},signal:c.signal});return r.status}catch(e){return 0}finally{clearTimeout(t)}}
+async function scan(https){var rs=await Promise.all(CANDS.map(async function(h){return{h:h,st:await probe(h,https,3500)}}));return rs.find(function(x){return x.st===200||x.st===401})}
+async function findRouter(){var f=await scan(false);if(f)return{host:f.h,https:false};var g=await scan(true);return g?{host:g.h,https:true}:null}
+async function getGateway(){try{var C=window.Capacitor;var P=C&&(C.registerPlugin?C.registerPlugin("Gateway"):(C.Plugins&&C.Plugins.Gateway));if(!P)return"";var r=await P.get();return normIp(r&&r.gateway)}catch(e){return""}}
+
+window.api=async function(m,p,b){
+  S.ip=normIp(S.ip);
+  var c=new AbortController(),t=setTimeout(function(){c.abort()},9000);
+  try{
+    var r=await fetch((S.https?"https":"http")+"://"+S.ip+"/rest"+p,{method:m,headers:{Authorization:"Basic "+b64u(S.user+":"+S.pass),"Content-Type":"application/json"},body:b?JSON.stringify(b):undefined,signal:c.signal});
+    var x=await r.text(),j;try{j=JSON.parse(x)}catch(e){j=x}
+    if(r.status===401)throw mkErr("اسم المستخدم أو كلمة المرور غير صحيحة","auth");
+    if(r.status===404)throw mkErr("هذا العنوان لا يرد كراوتر مايكروتك (404). تأكد من عنوان الراوتر ومن إصدار RouterOS v7.1 أو أحدث.","notfound");
+    if(!r.ok)throw mkErr((j&&(j.detail||j.message))||("HTTP "+r.status),"http");
+    return j;
+  }catch(e){
+    if(e.code)throw e;
+    if(e.name==="AbortError")throw mkErr("انتهت مهلة الاتصال: الراوتر لا يرد على "+S.ip+". تأكد من العنوان، وتفعيل خدمة www، وأن الموبايل على واي فاي الراوتر. جرّب زر جلب العنوان تلقائياً.","timeout");
+    throw mkErr("تعذر الوصول إلى الراوتر "+S.ip+". تأكد من العنوان وأن الموبايل على نفس الشبكة.","net");
+  }finally{clearTimeout(t)}
+};
+
+var baseSettings=window.settings;
+window.settings=function(){
+  baseSettings();
+  var ipEl=$("#ip");if(!ipEl||$("#gw"))return;
+  ipEl.insertAdjacentHTML("afterend",'<button class="btn b-green w" id="gw" style="border-radius:8px;margin:8px 0 4px;padding:13px;font-weight:700">📡 جلب عنوان الراوتر تلقائياً</button>');
+  var rs=$("#rs");
+  var okMsg=function(r){return '<b class="ok">تم الاتصال: '+E(r["board-name"])+' · v'+E(r.version)+'</b>'};
+  var badMsg=function(m){return '<b class="bad">'+E(m)+'</b>'};
+  var okIp=function(m){return '<b class="ok">'+E(m)+'</b>'};
+
+  $("#sv").onclick=async function(){
+    S.ip=normIp($("#ip").value);$("#ip").value=S.ip;S.user=$("#us").value.trim();S.pass=$("#pw").value;S.ifc=$("#if").value.trim();S.https=$("#hs").checked;save();
+    if(!S.ip){rs.innerHTML=badMsg("اكتب عنوان الراوتر أولاً");return}
+    if(PUBDNS.indexOf(S.ip.split(":")[0])>=0){rs.innerHTML=badMsg("هذا العنوان خادم DNS عام وليس راوتر مايكروتك. اضغط زر جلب العنوان تلقائياً.");return}
+    rs.textContent="جاري الاختبار…";
+    try{var r=await api("GET","/system/resource");rs.innerHTML=okMsg(r)}
+    catch(e){
+      if(e.code==="timeout"||e.code==="net"){
+        rs.textContent="جاري تجربة "+(S.https?"HTTP":"HTTPS")+"…";
+        var alt=await probe(S.ip,!S.https,4000);
+        if(alt===200||alt===401){S.https=!S.https;$("#hs").checked=S.https;save();try{var r2=await api("GET","/system/resource");rs.innerHTML=okMsg(r2)}catch(e2){rs.innerHTML=badMsg(e2.message)}return}
+      }
+      rs.innerHTML=badMsg(e.message);
+    }
+  };
+
+  $("#gw").onclick=async function(){
+    S.user=$("#us").value.trim();S.pass=$("#pw").value;
+    rs.textContent="جاري جلب عنوان الراوتر…";
+    var ip=await getGateway();
+    if(!ip||ip==="0.0.0.0"){
+      rs.textContent="جاري البحث في العناوين الشائعة…";
+      var f=await findRouter();
+      if(f){S.ip=f.host;S.https=f.https;$("#ip").value=f.host;$("#hs").checked=f.https;save();rs.innerHTML=okIp("تم العثور على الراوتر: "+f.host+". اضغط حفظ واختبار الاتصال.")}
+      else rs.innerHTML=badMsg("تعذّر جلب العنوان. تأكد أن الواي فاي متصل بشبكة الراوتر ثم اكتب العنوان يدوياً.");
+      return;
+    }
+    S.ip=ip;$("#ip").value=ip;
+    var https=false,st=await probe(ip,false,3500);
+    if(!(st===200||st===401)){st=await probe(ip,true,3500);https=true}
+    if(st===200||st===401){S.https=https;$("#hs").checked=https;save();rs.innerHTML=okIp("تم جلب عنوان الراوتر: "+ip+". اضغط حفظ واختبار الاتصال.")}
+    else{S.https=false;$("#hs").checked=false;save();rs.innerHTML=badMsg("تم جلب العنوان "+ip+" لكن الراوتر لا يرد على خدمة www. فعّلها من IP ▸ Services ثم اضغط حفظ واختبار الاتصال.")}
+  };
+};
+})();
+</script>
 </body>
 </html>
