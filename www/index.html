@@ -102,7 +102,7 @@ const b64u=t=>btoa(unescape(encodeURIComponent(t)));
 const PUBDNS=["1.1.1.1","1.0.0.1","8.8.8.8","8.8.4.4","9.9.9.9"];
 const CANDS=["192.168.88.1","192.168.1.1","192.168.0.1","10.0.0.1","10.10.10.1","172.16.0.1","192.168.100.1"];
 function mkErr(msg,code){const e=new Error(msg);e.code=code;return e}
-async function probe(host,https,ms,u,p){const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);try{const r=await fetch((https?"https":"http")+"://"+host+"/rest/system/resource",{headers:{Authorization:"Basic "+b64u(u+":"+p)},signal:c.signal});return r.status}catch(e){return 0}finally{clearTimeout(t)}}
+async function probe(host,https,ms,u,p){const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);try{const r=await fetch((https?"https":"http")+"://"+host+"/rest/system/resource",{headers:{Authorization:"Basic "+b64u(u+":"+p)},signal:c.signal});const x=await r.text();let j=null;try{j=JSON.parse(x)}catch(e){}if(j===null||typeof j!=="object")return 0;return r.status===200||r.status===401?r.status:0}catch(e){return 0}finally{clearTimeout(t)}}
 async function scan(https,u,p){const rs=await Promise.all(CANDS.map(async h=>({h,st:await probe(h,https,3500,u,p)})));return rs.find(x=>x.st===200||x.st===401)}
 async function findRouter(u,p){const f=await scan(false,u,p);if(f)return{host:f.h,https:false};const g=await scan(true,u,p);return g?{host:g.h,https:true}:null}
 async function getGateway(){try{const C=window.Capacitor;const P=C&&(C.registerPlugin?C.registerPlugin("Gateway"):(C.Plugins&&C.Plugins.Gateway));if(!P)return"";const r=await P.get();return normIp(r&&r.gateway)}catch(e){return""}}
@@ -112,10 +112,11 @@ async function api(m,p,b){
   const c=new AbortController(),t=setTimeout(()=>c.abort(),9000);
   try{
     const r=await fetch((S.https?"https":"http")+"://"+S.ip+"/rest"+p,{method:m,headers:{Authorization:"Basic "+b64u(S.user+":"+S.pass),"Content-Type":"application/json"},body:b?JSON.stringify(b):undefined,signal:c.signal});
-    const x=await r.text();let j;try{j=JSON.parse(x)}catch(e){j=x}
+    const x=await r.text();let j,isJ=true;try{j=JSON.parse(x)}catch(e){j=x;isJ=false}
+    if(!isJ&&x.trim()!=="")throw mkErr("الرد ليس من واجهة REST للراوتر. غالباً صفحة تسجيل دخول الهوتسبوت تعترض الاتصال. حل مضمون: في الراوتر نفّذ /ip service set www port=8080 ثم اكتب العنوان هكذا: "+S.ip.split(":")[0]+":8080","captive");
     if(r.status===401)throw mkErr("اسم المستخدم أو كلمة المرور غير صحيحة","auth");
     if(r.status===404)throw mkErr("هذا العنوان لا يرد كراوتر مايكروتك (404). تأكد من العنوان ومن إصدار RouterOS v7.1 أو أحدث.","notfound");
-    if(!r.ok)throw mkErr((j&&(j.detail||j.message))||("HTTP "+r.status),"http");
+    if(!r.ok)throw mkErr(((j&&(j.detail||j.message))||"")+" (HTTP "+r.status+")","http");
     return j;
   }catch(e){
     if(e.code)throw e;
@@ -123,6 +124,8 @@ async function api(m,p,b){
     throw mkErr("تعذر الوصول إلى الراوتر "+S.ip+". تأكد من العنوان وأن الموبايل على نفس الشبكة.","net");
   }finally{clearTimeout(t)}
 }
+async function addRec(p,b){try{return await api("POST",p+"/add",b)}catch(e){if(e.code==="http"&&/405|404/.test(e.message))return await api("PUT",p,b);throw e}}
+async function delRec(p,id){try{return await api("POST",p+"/remove",{".id":id})}catch(e){if(e.code==="http"&&/405|404/.test(e.message))return await api("DELETE",p+"/"+id);throw e}}
 const bps=n=>{n=+n||0;return n>=1e6?(n/1e6).toFixed(1)+" Mbit/s":(n/1e3).toFixed(0)+" Kbit/s"};
 
 // ---- navigation ----
@@ -159,6 +162,7 @@ async function dash(){
   $("#bk").onclick=()=>go("home");$("#ed").onclick=()=>netForm(S.cur);
   try{
     const r=await api("GET","/system/resource");
+    if(!r||!r["board-name"])throw mkErr("الرد ليس من راوتر مايكروتك. تأكد من العنوان والمنفذ.","bad");
     const used=Math.round(100-(r["free-memory"]/r["total-memory"])*100);
     $("#st").innerHTML=`<b class="ok">● متصل</b> <small>${E(r["board-name"])} · RouterOS ${E(r.version)}</small><div class="g2" style="margin-top:10px"><div class="st"><b>${E(r["cpu-load"])}%</b><span>المعالج</span></div><div class="st"><b>${used}%</b><span>الذاكرة</span></div></div><p class="m">مدة التشغيل: ${E(r.uptime)}</p>`;
     const [u,a,p]=await Promise.all([api("GET","/ip/hotspot/user?.proplist=.id"),api("GET","/ip/hotspot/active?.proplist=.id"),api("GET","/ip/hotspot/user/profile?.proplist=.id")]);
@@ -183,7 +187,7 @@ function netForm(id){
   <label>منفذ المراقبة</label><input id="if" class="ltr" value="${E(n.ifc)}">
   <label><input type="checkbox" id="hs" ${n.https?"checked":""} style="width:auto"> استخدام HTTPS (www-ssl)</label>
   <div class="row"><button class="btn b-blue" id="sv">حفظ</button><button class="btn b-green" id="sc">حفظ واتصال</button>${old?`<button class="btn b-red" id="dl">حذف</button>`:""}<button class="btn" id="cn">رجوع</button></div>
-  <p class="m" id="rs"></p><p class="m">يحتاج RouterOS v7.1 أو أحدث، مع تفعيل خدمة www من IP ▸ Services، وأن يكون الموبايل على نفس الشبكة.</p></div>`;
+  <p class="m" id="rs"></p><p class="m">يحتاج RouterOS v7.1 أو أحدث، مع تفعيل خدمة www من IP ▸ Services، وأن يكون الموبايل على نفس الشبكة.</p><p class="m"><b>إذا كان الراوتر يشغّل هوتسبوت:</b> الهوتسبوت يعترض المنفذ 80 ويرد بصفحة تسجيل الدخول. نفّذ في الراوتر <span class="ltr" style="display:inline-block">/ip service set www port=8080</span> ثم اكتب العنوان هكذا <span class="ltr" style="display:inline-block">192.168.88.1:8080</span></p></div>`;
   $("#ics").onclick=e=>{const b=e.target.closest("[data-i]");if(!b)return;ic=b.dataset.i;v.querySelectorAll("#ics .chip").forEach(x=>x.classList.toggle("on",x===b))};
   $("#cls").onclick=e=>{const b=e.target.closest("[data-c]");if(!b)return;cc=+b.dataset.c;v.querySelectorAll("#cls .chip").forEach(x=>x.classList.toggle("on",x===b))};
   const collect=()=>({id:n.id||"n"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:$("#nn").value.trim()||("شبكة "+(S.nets.length+(old?0:1))),i:ic,c:cc,ip:normIp($("#ip").value),user:$("#us").value.trim(),pass:$("#pw").value,https:$("#hs").checked,ifc:$("#if").value.trim()||"ether1"});
@@ -220,7 +224,7 @@ async function users(){
     $("#ls").innerHTML=f.length?f.map(x=>mode==="u"?`<div class="it"><div><span class="c">${E(x.name)}</span><br><small>${E(x.profile||"")} · ${E(x.uptime||"")} ${E(x.comment||"")}</small></div><button class="btn s b-red" data-d="${E(x[".id"])}">حذف</button></div>`:`<div class="it"><div><span class="c">${E(x.user)}</span><br><small>${E(x.address||"")} · ${E(x.uptime||"")}</small></div></div>`).join(""):"لا توجد نتائج"};
   const load=async m=>{mode=m;$("#ls").textContent="جاري التحميل…";try{data=await api("GET",m==="u"?"/ip/hotspot/user":"/ip/hotspot/active");draw()}catch(e){$("#ls").innerHTML=`<span class="bad">${E(e.message)}</span>`}};
   $("#q").oninput=draw;$("#bu").onclick=()=>load("u");$("#ba").onclick=()=>load("a");
-  $("#ls").onclick=async e=>{const id=e.target.dataset.d;if(!id||!confirm("حذف هذا اليوزر من الراوتر؟"))return;try{await api("DELETE","/ip/hotspot/user/"+id);data=data.filter(x=>x[".id"]!==id);draw()}catch(x){toast(x.message)}};
+  $("#ls").onclick=async e=>{const id=e.target.dataset.d;if(!id||!confirm("حذف هذا اليوزر من الراوتر؟"))return;try{await delRec("/ip/hotspot/user",id);data=data.filter(x=>x[".id"]!==id);draw()}catch(x){toast(x.message)}};
   load("u");
 }
 
@@ -267,7 +271,7 @@ async function cards(){
     const pf=$("#pf").value,cm=($("#bn").value||"batch").replace(/["\\]/g,"");
     $("#go").disabled=true;let done=0,fail=0,i=0;
     const work=async()=>{while(i<list.length){const x=list[i++];const b={name:x.u,password:x.p,profile:pf,comment:cm};if(ds)b["limit-uptime"]=ds;if(qb)b["limit-bytes-total"]=String(qb);
-      try{await api("PUT","/ip/hotspot/user",b);done++}catch(e){fail++;if(fail===1)toast(e.message)}$("#pg").textContent=`تم ${done} من ${list.length}${fail?" · فشل "+fail:""}`}};
+      try{await addRec("/ip/hotspot/user",b);done++}catch(e){fail++;if(fail===1)toast(e.message)}$("#pg").textContent=`تم ${done} من ${list.length}${fail?" · فشل "+fail:""}`}};
     await Promise.all([work(),work(),work(),work()]);$("#go").disabled=false;
     lastBatch={users:list.slice(),dur:durAr(dd,dh,dm),quota:qb?(qv+" "+qu):"",price:+$("#pr").value||0};upd();
     $("#pg").innerHTML=`<b class="${fail?"bad":"ok"}">انتهى: ${done} كارت أُضيف للراوتر${fail?" · "+fail+" فشل":""}</b>`;
@@ -312,7 +316,7 @@ async function profiles(){
   const load=async()=>{try{const d=await api("GET","/ip/hotspot/user/profile");$("#ls").innerHTML=d.map(p=>`<div class="it"><div><span class="c">${E(p.name)}</span><br><small>${E(p["rate-limit"]||"بدون حد")} · أجهزة: ${E(p["shared-users"]||"1")}</small></div></div>`).join("")}catch(e){$("#ls").innerHTML=`<span class="bad">${E(e.message)}</span>`}};
   $("#ad").onclick=async()=>{if(!need("pro"))return;const n=$("#pn").value.trim().replace(/["\\]/g,"");if(!n)return toast("اكتب اسم الباقة");
     const b={name:n,"shared-users":$("#sh").value||"1"};if($("#rt").value.trim())b["rate-limit"]=$("#rt").value.trim();
-    try{await api("PUT","/ip/hotspot/user/profile",b);toast("تمت الإضافة");load()}catch(e){toast(e.message)}};
+    try{await addRec("/ip/hotspot/user/profile",b);toast("تمت الإضافة");load()}catch(e){toast(e.message)}};
   load();
 }
 
