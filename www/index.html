@@ -1,84 +1,93 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-th="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>أبو عمار نت</title>
 <style>
-:root{--ink:#eaf2ff;--mute:#a9bbd3;--line:rgba(255,255,255,.18);--glass:rgba(255,255,255,.10);--brand:#ff5a4d;--acc:#7cc4ff;--ok:#4cd9a0}
+:root{--ink:#eaf2ff;--mute:#a9bbd3;--glass:rgba(255,255,255,.10);--line:rgba(255,255,255,.18);--inp:rgba(255,255,255,.08);--bg1:#0b1f3a;--bg2:#0c5560;--nav:rgba(8,22,40,.72);--acc:#7cc4ff;--ok:#4cd9a0;--bad:#ff8a80}
+:root[data-th=light]{--ink:#12263a;--mute:#5b6e82;--glass:rgba(255,255,255,.62);--line:rgba(20,40,70,.14);--inp:rgba(255,255,255,.75);--bg1:#e6f1ff;--bg2:#d6f1ec;--nav:rgba(255,255,255,.8);--acc:#1f5fd1;--ok:#12936a;--bad:#d6382c}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:linear-gradient(160deg,#0b1f3a 0%,#0f3b57 55%,#0c5560 100%) fixed;color:var(--ink);font-family:system-ui,Tahoma,Arial,sans-serif;min-height:100vh;padding-top:env(safe-area-inset-top);padding-bottom:calc(66px + env(safe-area-inset-bottom))}
-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,.07);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-header .lg{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#ff6a5a,#d6382c);color:#fff;display:grid;place-items:center;font-weight:700;font-size:20px;box-shadow:0 4px 12px rgba(214,56,44,.5)}
+body{margin:0;background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed;color:var(--ink);font-family:system-ui,Tahoma,Arial,sans-serif;min-height:100vh;padding-top:env(safe-area-inset-top);padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+.ic{vertical-align:middle;flex:none}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+header .lg{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#ff6a5a,#d6382c);color:#fff;display:grid;place-items:center;font-weight:700;font-size:20px}
 header b{font-size:18px}header small{display:block;font-size:12px;color:var(--mute)}
 #v{padding:12px;max-width:720px;margin:0 auto}
-.card{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.22)}
-.card h3{margin:0 0 10px;font-size:16px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.st{background:rgba(255,255,255,.08);border-radius:12px;padding:10px;text-align:center}.st b{display:block;font-size:20px;color:var(--acc);direction:ltr}.st span{font-size:12px;color:var(--mute)}
+.card{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 10px;font-size:16px;display:flex;align-items:center;gap:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.st{background:var(--inp);border-radius:12px;padding:10px;text-align:center}.st b{display:block;font-size:19px;color:var(--acc);direction:ltr}.st span{font-size:12px;color:var(--mute)}
+.meter{background:var(--inp);border-radius:12px;padding:10px}.meter .t{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mute)}.meter b{font-size:16px;color:var(--ink)}
+.bar{height:6px;border-radius:6px;background:var(--line);margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#3b9cff,#2fd68b)}
 label{display:block;font-size:12px;color:var(--mute);margin:8px 0 3px}
-input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:12px;font:inherit;background:rgba(255,255,255,.08);color:#fff}
-select option{color:#000}input::placeholder{color:rgba(255,255,255,.45)}
+input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:12px;font:inherit;background:var(--inp);color:var(--ink)}
+select option{color:#000}input[type=range]{padding:0;accent-color:#3b9cff}input[type=color]{padding:2px;height:40px}
 .ltr{direction:ltr;text-align:left}
-.btn{display:inline-block;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.12);font:inherit;font-weight:600;color:#fff;cursor:pointer}
-.btn.p,.b-red{background:linear-gradient(135deg,#ff6a5a,#d6382c);border:0}
-.b-blue{background:linear-gradient(135deg,#3b9cff,#1f5fd1);border:0}.b-green{background:linear-gradient(135deg,#2fd68b,#12936a);border:0}
-.b-orange{background:linear-gradient(135deg,#ffb347,#f0761c);border:0}.b-purple{background:linear-gradient(135deg,#a37bff,#6a3fd1);border:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--glass);font:inherit;font-weight:600;color:var(--ink);cursor:pointer;text-decoration:none}
 .btn.w{width:100%;margin-top:12px}.btn.s{padding:5px 11px;font-size:12px}
+.b-blue,.b-green,.b-orange,.b-purple,.b-red{color:#fff;border:0}
+.b-red{background:linear-gradient(135deg,#ff6a5a,#d6382c)}.b-blue{background:linear-gradient(135deg,#3b9cff,#1f5fd1)}.b-green{background:linear-gradient(135deg,#2fd68b,#12936a)}.b-orange{background:linear-gradient(135deg,#ffb347,#f0761c)}.b-purple{background:linear-gradient(135deg,#a37bff,#6a3fd1)}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.ok{color:var(--ok)}.bad{color:#ff8a80}small,.m{color:var(--mute);font-size:12px}
-.it{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}.it:last-child{border:0}
-.it .c{direction:ltr;font-family:monospace;font-weight:700}
-.tile{position:relative;text-align:center;padding:18px 8px;border-radius:18px;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.25);box-shadow:0 8px 20px rgba(0,0,0,.25);cursor:pointer}
-.tile i{display:block;font-style:normal;font-size:26px;margin-bottom:4px}
-.t1{background:linear-gradient(135deg,rgba(59,156,255,.85),rgba(31,95,209,.85))}.t2{background:linear-gradient(135deg,rgba(47,214,139,.85),rgba(18,147,106,.85))}
-.t3{background:linear-gradient(135deg,rgba(255,179,71,.9),rgba(240,118,28,.9))}.t4{background:linear-gradient(135deg,rgba(255,214,90,.9),rgba(196,140,20,.9))}
-.t5{background:linear-gradient(135deg,rgba(163,123,255,.85),rgba(106,63,209,.85))}.t6{background:linear-gradient(135deg,rgba(255,106,90,.85),rgba(214,56,44,.85))}
-.tag{position:absolute;top:6px;inset-inline-start:6px;font-size:10px;background:rgba(0,0,0,.35);border-radius:8px;padding:1px 7px}
-nav{position:fixed;bottom:0;inset-inline:0;display:flex;background:rgba(8,22,40,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;border:0;background:none;padding:11px 1px;font:inherit;font-size:11px;color:var(--mute)}
-nav button.on{color:#fff;font-weight:700;text-shadow:0 0 12px rgba(124,196,255,.8)}
-.toast{position:fixed;inset-inline:16px;bottom:88px;background:rgba(0,0,0,.8);color:#fff;padding:10px 14px;border-radius:12px;text-align:center;opacity:0;pointer-events:none;transition:.2s}.toast.on{opacity:1}
+.ok{color:var(--ok)}.bad{color:var(--bad)}small,.m{color:var(--mute);font-size:12px}
+.it{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}.it:last-child{border:0}.it .c{direction:ltr;font-family:monospace;font-weight:700}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border-radius:14px;border:1px solid var(--line);background:var(--inp);color:var(--mute);font:inherit;font-size:12px}
+.seg button.on{background:linear-gradient(135deg,#3b9cff,#1f5fd1);color:#fff;border-color:transparent}
+.tile{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border-radius:18px;background:var(--glass);border:1px solid var(--line);font-weight:700;font-size:14px;text-align:center;cursor:pointer;position:relative}
+.tile .ti{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.25)}
+.tile .soon{position:absolute;top:8px;inset-inline-start:8px;font-size:10px;background:var(--inp);border-radius:8px;padding:1px 7px;color:var(--mute);font-weight:400}
+nav{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom));inset-inline:12px;max-width:520px;margin:0 auto;display:flex;background:var(--nav);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:20px;padding:6px 4px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;padding:7px 1px;border-radius:14px;font:inherit;font-size:10.5px;color:var(--mute)}
+nav button.on{color:#fff;background:linear-gradient(135deg,#3b9cff,#1f5fd1)}
+.toast{position:fixed;inset-inline:16px;bottom:96px;background:rgba(0,0,0,.85);color:#fff;padding:10px 14px;border-radius:12px;text-align:center;opacity:0;pointer-events:none;transition:.2s;z-index:30}.toast.on{opacity:1}
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:20}
+#ov .bx{width:min(320px,86vw);background:var(--bg1);border:1px solid var(--line);border-radius:20px;padding:20px;text-align:center;color:#eaf2ff}
+#ov .pb{height:10px;border-radius:10px;background:rgba(255,255,255,.15);margin:14px 0 8px;overflow:hidden}#ov .pb i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3b9cff,#2fd68b);transition:width .2s}
+canvas{width:100%;border-radius:10px;background:#fff;display:block}
 .ab{text-align:center}.av{width:124px;height:124px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.55);box-shadow:0 8px 24px rgba(0,0,0,.4)}
 .ab h2{margin:10px 0 2px;font-size:20px}.ab p{margin:4px 0;color:var(--mute);font-size:14px}
-.soc a{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-top:8px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid var(--line);color:#fff;text-decoration:none}
-.soc i{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none;border:1px solid rgba(255,255,255,.25)}.soc svg{width:22px;height:22px;fill:#fff}
-.soc span{display:block}.soc small{display:block;direction:ltr;text-align:right}
-.chip{border:1px solid var(--line);background:rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;font:inherit;color:#fff;font-size:18px;cursor:pointer}
-.chip.s{font-size:13px;padding:6px 10px}.chip.on{outline:2px solid var(--acc)}.chip.tc{width:40px;height:34px;padding:0;border:0}
-.ics{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.ck{display:flex;align-items:center;gap:6px;margin:0;font-size:13px;color:#fff}.ck input{width:auto}
-.tile.add{background:rgba(255,255,255,.08);border-style:dashed}
+.soc a{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-top:8px;border-radius:14px;background:var(--inp);border:1px solid var(--line);color:var(--ink);text-decoration:none}
+.soc i{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none}.soc svg{width:22px;height:22px;fill:#fff}.soc small{display:block;direction:ltr;text-align:right}
+.hello h2{margin:0;font-size:22px}.hello p{margin:2px 0 12px;color:var(--mute);font-size:13px}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);padding:6px}.sum div{text-align:center;padding:8px 2px}.sum div+div{border-inline-start:1px solid var(--line)}.sum b{display:block;font-size:22px}.sum span{font-size:12px;color:var(--mute)}
+.plan{display:flex;gap:12px;align-items:center}.plan .ti{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:#fff;flex:none}.plan p{margin:2px 0;font-size:13px;color:var(--mute)}.plan b{font-size:16px}
 </style>
 </head>
 <body>
+<header><div class="lg">ع</div><div><b>أبو عمار نت</b><small id="tier">النسخة المجانية</small></div></header>
 <div id="v"></div>
 <nav id="nav"></nav>
+<div id="ov"><div class="bx"><b id="ot">جاري الإنشاء…</b><div class="pb"><i id="ob"></i></div><small id="op" style="color:#a9bbd3"></small></div></div>
 <div class="toast" id="toast"></div>
 <script>
 const $=s=>document.querySelector(s),v=$("#v");
 const E=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const PUB={"kty":"EC","x":"peU5KL2OSoZiiZuU18--IiUfJoXULGG8VjwQOU5-V-o","y":"zRx0kI7wVds_zlCsfh4Sa6t2UI2hoaSjOL4UjkNFlxg","crv":"P-256"};
-const RANK={free:0,pro:1,vip:2};
-let S=Object.assign({ip:"192.168.88.1",user:"admin",pass:"",https:false,ifc:"ether1",lic:"",rows:10,cols:3,color:"#c0362c",ssid:"Abu Ammar Net",showPrice:true},JSON.parse(localStorage.getItem("aan")||"{}"));
+const IC={"wa": "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z", "ms": "M12 0C5.24 0 0 4.952 0 11.64c0 3.499 1.434 6.521 3.769 8.61a.96.96 0 0 1 .323.683l.065 2.135a.96.96 0 0 0 1.347.85l2.381-1.053a.96.96 0 0 1 .641-.046A13 13 0 0 0 12 23.28c6.76 0 12-4.952 12-11.64S18.76 0 12 0m6.806 7.44c.522-.03.971.567.63 1.094l-4.178 6.457a.707.707 0 0 1-.977.208l-3.87-2.504a.44.44 0 0 0-.49.007l-4.363 3.01c-.637.438-1.415-.317-.995-.966l4.179-6.457a.706.706 0 0 1 .977-.21l3.87 2.505c.15.097.344.094.491-.007l4.362-3.008a.7.7 0 0 1 .364-.13", "tt": "M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z", "yt": "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"};
+const LI={"house":"<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\" /> <path d=\"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" />","users":"<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\" /> <path d=\"M16 3.128a4 4 0 0 1 0 7.744\" /> <path d=\"M22 21v-2a4 4 0 0 0-3-3.87\" /> <circle cx=\"9\" cy=\"7\" r=\"4\" />","ticket":"<path d=\"M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z\" /> <path d=\"M13 5v2\" /> <path d=\"M13 17v2\" /> <path d=\"M13 11v2\" />","layers":"<path d=\"M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z\" /> <path d=\"M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12\" /> <path d=\"M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17\" />","wrench":"<path d=\"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z\" />","log-in":"<path d=\"m10 17 5-5-5-5\" /> <path d=\"M15 12H3\" /> <path d=\"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4\" />","wallet":"<path d=\"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1\" /> <path d=\"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4\" />","store":"<path d=\"M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5\" /> <path d=\"M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244\" /> <path d=\"M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05\" />","radar":"<path d=\"M19.07 4.93A10 10 0 0 0 6.99 3.34\" /> <path d=\"M4 6h.01\" /> <path d=\"M2.29 9.62A10 10 0 1 0 21.31 8.35\" /> <path d=\"M16.24 7.76A6 6 0 1 0 8.23 16.67\" /> <path d=\"M12 18h.01\" /> <path d=\"M17.99 11.66A6 6 0 0 1 15.77 16.67\" /> <circle cx=\"12\" cy=\"12\" r=\"2\" /> <path d=\"m13.41 10.59 5.66-5.66\" />","activity":"<path d=\"M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2\" />","crown":"<path d=\"M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z\" /> <path d=\"M5 21h14\" />","settings":"<path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\" /> <circle cx=\"12\" cy=\"12\" r=\"3\" />","info":"<circle cx=\"12\" cy=\"12\" r=\"10\" /> <path d=\"M12 16v-4\" /> <path d=\"M12 8h.01\" />","cpu":"<path d=\"M12 20v2\" /> <path d=\"M12 2v2\" /> <path d=\"M17 20v2\" /> <path d=\"M17 2v2\" /> <path d=\"M2 12h2\" /> <path d=\"M2 17h2\" /> <path d=\"M2 7h2\" /> <path d=\"M20 12h2\" /> <path d=\"M20 17h2\" /> <path d=\"M20 7h2\" /> <path d=\"M7 20v2\" /> <path d=\"M7 2v2\" /> <rect x=\"4\" y=\"4\" width=\"16\" height=\"16\" rx=\"2\" /> <rect x=\"8\" y=\"8\" width=\"8\" height=\"8\" rx=\"1\" />","hard-drive":"<path d=\"M10 16h.01\" /> <path d=\"M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z\" /> <path d=\"M21.946 12.013H2.054\" /> <path d=\"M6 16h.01\" />","memory-stick":"<path d=\"M12 12v-2\" /> <path d=\"M12 18v-2\" /> <path d=\"M16 12v-2\" /> <path d=\"M16 18v-2\" /> <path d=\"M2 11h1.5\" /> <path d=\"M20 18v-2\" /> <path d=\"M20.5 11H22\" /> <path d=\"M4 18v-2\" /> <path d=\"M8 12v-2\" /> <path d=\"M8 18v-2\" /> <rect x=\"2\" y=\"6\" width=\"20\" height=\"10\" rx=\"2\" />","clock":"<circle cx=\"12\" cy=\"12\" r=\"10\" /> <path d=\"M12 6v6l4 2\" />","timer":"<line x1=\"10\" x2=\"14\" y1=\"2\" y2=\"2\" /> <line x1=\"12\" x2=\"15\" y1=\"14\" y2=\"11\" /> <circle cx=\"12\" cy=\"14\" r=\"8\" />","hourglass":"<path d=\"M5 22h14\" /> <path d=\"M5 2h14\" /> <path d=\"M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22\" /> <path d=\"M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2\" />","sun":"<circle cx=\"12\" cy=\"12\" r=\"4\" /> <path d=\"M12 2v2\" /> <path d=\"M12 20v2\" /> <path d=\"m4.93 4.93 1.41 1.41\" /> <path d=\"m17.66 17.66 1.41 1.41\" /> <path d=\"M2 12h2\" /> <path d=\"M20 12h2\" /> <path d=\"m6.34 17.66-1.41 1.41\" /> <path d=\"m19.07 4.93-1.41 1.41\" />","moon":"<path d=\"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401\" />","smartphone":"<rect width=\"14\" height=\"20\" x=\"5\" y=\"2\" rx=\"2\" ry=\"2\" /> <path d=\"M12 18h.01\" />","printer":"<path d=\"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2\" /> <path d=\"M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6\" /> <rect x=\"6\" y=\"14\" width=\"12\" height=\"8\" rx=\"1\" />","share-2":"<circle cx=\"18\" cy=\"5\" r=\"3\" /> <circle cx=\"6\" cy=\"12\" r=\"3\" /> <circle cx=\"18\" cy=\"19\" r=\"3\" /> <line x1=\"8.59\" x2=\"15.42\" y1=\"13.51\" y2=\"17.49\" /> <line x1=\"15.41\" x2=\"8.59\" y1=\"6.51\" y2=\"10.49\" />","file-text":"<path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\" /> <path d=\"M14 2v5a1 1 0 0 0 1 1h5\" /> <path d=\"M10 9H8\" /> <path d=\"M16 13H8\" /> <path d=\"M16 17H8\" />","check":"<path d=\"M20 6 9 17l-5-5\" />","x":"<path d=\"M18 6 6 18\" /> <path d=\"m6 6 12 12\" />","sliders-horizontal":"<path d=\"M10 5H3\" /> <path d=\"M12 19H3\" /> <path d=\"M14 3v4\" /> <path d=\"M16 17v4\" /> <path d=\"M21 12h-9\" /> <path d=\"M21 19h-5\" /> <path d=\"M21 5h-7\" /> <path d=\"M8 10v4\" /> <path d=\"M8 12H3\" />","router":"<rect width=\"20\" height=\"8\" x=\"2\" y=\"14\" rx=\"2\" /> <path d=\"M6.01 18H6\" /> <path d=\"M10.01 18H10\" /> <path d=\"M15 10v4\" /> <path d=\"M17.84 7.17a4 4 0 0 0-5.66 0\" /> <path d=\"M20.66 4.34a8 8 0 0 0-11.31 0\" />","signal":"<path d=\"M2 20h.01\" /> <path d=\"M7 20v-4\" /> <path d=\"M12 20v-8\" /> <path d=\"M17 20V8\" /> <path d=\"M22 4v16\" />","zap":"<path d=\"M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z\" />","circle-check":"<circle cx=\"12\" cy=\"12\" r=\"10\" /> <path d=\"m16 9-5.5 5.5L8 12\" />","circle-x":"<circle cx=\"12\" cy=\"12\" r=\"10\" /> <path d=\"m15 9-6 6\" /> <path d=\"m9 9 6 6\" />","wifi":"<path d=\"M12 20h.01\" /> <path d=\"M2 8.82a15 15 0 0 1 20 0\" /> <path d=\"M5 12.859a10 10 0 0 1 14 0\" /> <path d=\"M8.5 16.429a5 5 0 0 1 7 0\" />","trash-2":"<path d=\"M10 11v6\" /> <path d=\"M14 11v6\" /> <path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\" /> <path d=\"M3 6h18\" /> <path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\" />","eye":"<path d=\"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0\" /> <circle cx=\"12\" cy=\"12\" r=\"3\" />","rotate-cw":"<path d=\"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8\" /> <path d=\"M21 3v5h-5\" />","radio-tower":"<path d=\"M4.9 16.1C1 12.2 1 5.8 4.9 1.9\" /> <path d=\"M7.8 4.7a6.14 6.14 0 0 0-.8 7.5\" /> <circle cx=\"12\" cy=\"9\" r=\"2\" /> <path d=\"M16.2 4.8c2 2 2.26 5.11.8 7.47\" /> <path d=\"M19.1 1.9a9.96 9.96 0 0 1 0 14.1\" /> <path d=\"M9.5 18h5\" /> <path d=\"m8 22 4-11 4 11\" />","plus":"<path d=\"M5 12h14\" /> <path d=\"M12 5v14\" />","user-check":"<path d=\"m16 11 2 2 4-4\" /> <path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\" /> <circle cx=\"9\" cy=\"7\" r=\"4\" />","user-x":"<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\" /> <circle cx=\"9\" cy=\"7\" r=\"4\" /> <line x1=\"17\" x2=\"22\" y1=\"8\" y2=\"13\" /> <line x1=\"22\" x2=\"17\" y1=\"8\" y2=\"13\" />","ticket-check":"<path d=\"M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z\" /> <path d=\"m9 12 2 2 4-4\" />","ticket-x":"<path d=\"M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z\" /> <path d=\"m9.5 14.5 5-5\" /> <path d=\"m9.5 9.5 5 5\" />","file-down":"<path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\" /> <path d=\"M14 2v5a1 1 0 0 0 1 1h5\" /> <path d=\"M12 18v-6\" /> <path d=\"m9 15 3 3 3-3\" />","chevron-down":"<path d=\"m6 9 6 6 6-6\" />"};
+const ic=(n,s=20)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${LI[n]||""}</svg>`;
+const RANK={free:0,basic:1,pro:2,max:3,vip:3},TN={free:"النسخة المجانية",basic:"أساسي",pro:"احترافي",max:"ماكس",vip:"ماكس"};
+const CD0={title:"أبو عمار نت",ts:17,cs:40,cy:56,fs:13,col:"#c0362c",foot:true,al:"center"};
+let S=Object.assign({ip:"192.168.88.1",port:8728,user:"admin",pass:"",ifc:"",theme:"auto",mode:"use",rows:20,cols:5,fname:"cards",lic:""},JSON.parse(localStorage.getItem("aan")||"{}"));
+S.cd=Object.assign({},CD0,S.cd);
 let L={t:"free",c:""},tm=null,lastBatch=null;
 const save=()=>localStorage.setItem("aan",JSON.stringify(S));
-if(!Array.isArray(S.nets)){S.nets=[];if(S.pass)S.nets.push({id:"n0",name:"شبكتي",i:"📶",c:1,ip:S.ip,user:S.user,pass:S.pass,https:!!S.https,ifc:S.ifc||"ether1"})}
-S.cd=Object.assign({ssid:S.ssid||"Abu Ammar Net",biz:"أبو عمار للرقمنة والحلول البرمجية",phone:"واتساب: +249961270800",note:"",cur:"ج",cols:S.cols||2,color:"#000000",fs:1,showPrice:true,showDur:true,showQuota:true,showPass:true},S.cd||{});
-function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),2600)}
-function need(t){if(RANK[L.t]>=RANK[t])return true;toast("هذه الميزة "+t.toUpperCase()+": فعّل كود الترخيص من الإعدادات");return false}
+function theme(){document.documentElement.dataset.th=S.theme==="auto"?(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"):S.theme}
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),2800)}
+function need(t){if(RANK[L.t]>=RANK[t])return true;toast("هذه الميزة للنسخة المدفوعة: فعّل اشتراكك من تبويب الاشتراك");return false}
+const dur2s=s=>{let n=0;String(s||"").replace(/(\d+)([wdhms])/g,(_,a,u)=>{n+=a*{w:604800,d:86400,h:3600,m:60,s:1}[u]});return n};
 
-// ---- license (offline signature check) ----
+// ---- license ----
 const b64d=s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0));
 async function checkLic(code){
-  try{
-    const [p,s]=String(code).trim().split(".");const data=b64d(p);
+  try{const [p,s]=String(code).trim().split(".");const data=b64d(p);
     const key=await crypto.subtle.importKey("jwk",PUB,{name:"ECDSA",namedCurve:"P-256"},false,["verify"]);
     if(!await crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},key,b64d(s),data))return null;
     const o=JSON.parse(new TextDecoder().decode(data));
+    if(o.d!==S.did)return null;
     if(o.e&&new Date(o.e)<new Date())return null;
-    return RANK[o.t]!==undefined?o:null;
-  }catch(e){return null}
+    return RANK[o.t]!==undefined?o:null}catch(e){return null}
 }
 const LIC_URL="https://raw.githubusercontent.com/Abdallh113/abu-ammar-net/main/licenses.json";
 async function checkOnline(){
@@ -86,6 +95,7 @@ async function checkOnline(){
     const o=((await r.json()).devices||{})[S.did];if(!o)return null;
     if(o.e&&new Date(o.e)<new Date())return null;return RANK[o.t]!==undefined?o:null}catch(e){return undefined}
 }
+const rnd=(n,k)=>{const s=k==="num"?"0123456789":"abcdefghjkmnpqrstuvwxyz23456789",a=new Uint32Array(n);crypto.getRandomValues(a);return[...a].map(x=>s[x%s.length]).join("")};
 async function applyLic(){
   if(!S.did){S.did="AB-"+rnd(6,"alnum").toUpperCase();save()}
   let o=S.lic?await checkLic(S.lic):null;
@@ -94,250 +104,240 @@ async function applyLic(){
     else if(on===null){delete S.onl;save()}
     else if(S.onl&&Date.now()-S.onl.at<30*864e5&&(!S.onl.e||new Date(S.onl.e)>new Date()))o=S.onl}
   L=o?{t:o.t,c:o.c||""}:{t:"free",c:""};
+  $("#tier").textContent=TN[L.t]+(L.c?" · "+L.c:"");
 }
 
-// ---- RouterOS REST ----
-const normIp=v=>String(v||"").trim().replace(/^https?:\/\//i,"").replace(/\/.*$/,"").replace(/\s+/g,"");
-const b64u=t=>btoa(unescape(encodeURIComponent(t)));
-const PUBDNS=["1.1.1.1","1.0.0.1","8.8.8.8","8.8.4.4","9.9.9.9"];
-const CANDS=["192.168.88.1","192.168.1.1","192.168.0.1","10.0.0.1","10.10.10.1","172.16.0.1","192.168.100.1"];
-function mkErr(msg,code){const e=new Error(msg);e.code=code;return e}
-async function probe(host,https,ms,u,p){const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);try{const r=await fetch((https?"https":"http")+"://"+host+"/rest/system/resource",{headers:{Authorization:"Basic "+b64u(u+":"+p)},signal:c.signal});const x=await r.text();let j=null;try{j=JSON.parse(x)}catch(e){}if(j===null||typeof j!=="object")return 0;return r.status===200||r.status===401?r.status:0}catch(e){return 0}finally{clearTimeout(t)}}
-async function scan(https,u,p){const rs=await Promise.all(CANDS.map(async h=>({h,st:await probe(h,https,3500,u,p)})));return rs.find(x=>x.st===200||x.st===401)}
-async function findRouter(u,p){const f=await scan(false,u,p);if(f)return{host:f.h,https:false};const g=await scan(true,u,p);return g?{host:g.h,https:true}:null}
-async function getGateway(){try{const C=window.Capacitor;const P=C&&(C.registerPlugin?C.registerPlugin("Gateway"):(C.Plugins&&C.Plugins.Gateway));if(!P)return"";const r=await P.get();return normIp(r&&r.gateway)}catch(e){return""}}
-async function api(m,p,b){
-  S.ip=normIp(S.ip);
-  if(!S.ip)throw mkErr("لم تحدد شبكة. اختر شبكة من الرئيسية.","none");
-  const c=new AbortController(),t=setTimeout(()=>c.abort(),9000);
-  try{
-    const r=await fetch((S.https?"https":"http")+"://"+S.ip+"/rest"+p,{method:m,headers:{Authorization:"Basic "+b64u(S.user+":"+S.pass),"Content-Type":"application/json"},body:b?JSON.stringify(b):undefined,signal:c.signal});
-    const x=await r.text();let j,isJ=true;try{j=JSON.parse(x)}catch(e){j=x;isJ=false}
-    if(!isJ&&x.trim()!=="")throw mkErr("الرد ليس من واجهة REST للراوتر. غالباً صفحة تسجيل دخول الهوتسبوت تعترض الاتصال. حل مضمون: في الراوتر نفّذ /ip service set www port=8080 ثم اكتب العنوان هكذا: "+S.ip.split(":")[0]+":8080","captive");
-    if(r.status===401)throw mkErr("اسم المستخدم أو كلمة المرور غير صحيحة","auth");
-    if(r.status===404)throw mkErr("هذا العنوان لا يرد كراوتر مايكروتك (404). تأكد من العنوان ومن إصدار RouterOS v7.1 أو أحدث.","notfound");
-    if(!r.ok)throw mkErr(((j&&(j.detail||j.message))||"")+" (HTTP "+r.status+")","http");
-    return j;
-  }catch(e){
-    if(e.code)throw e;
-    if(e.name==="AbortError")throw mkErr("انتهت مهلة الاتصال: الراوتر لا يرد على "+S.ip+". تأكد من العنوان، وتفعيل خدمة www، وأن الموبايل على واي فاي الراوتر.","timeout");
-    throw mkErr("تعذر الوصول إلى الراوتر "+S.ip+". تأكد من العنوان وأن الموبايل على نفس الشبكة.","net");
-  }finally{clearTimeout(t)}
+// ---- RouterOS (native API on 8728, REST fallback for browser preview) ----
+const RO=()=>window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.RouterOs;
+function hint(m){
+  m=String(m);
+  if(m==="TIMEOUT")return"لا يوجد رد من الراوتر. تأكد أن الموبايل على نفس شبكة الراوتر وأن العنوان صحيح";
+  if(m==="REFUSED")return"الراوتر رفض الاتصال. فعّل خدمة api من IP ▸ Services (المنفذ 8728)";
+  if(/cannot log in|invalid user/i.test(m))return"اليوزر أو كلمة المرور غير صحيحة";
+  return m.replace(/^TRAP: /,"");
 }
-async function addRec(p,b){try{return await api("POST",p+"/add",b)}catch(e){if(e.code==="http"&&/405|404/.test(e.message))return await api("PUT",p,b);throw e}}
-async function delRec(p,id){try{return await api("POST",p+"/remove",{".id":id})}catch(e){if(e.code==="http"&&/405|404/.test(e.message))return await api("DELETE",p+"/"+id);throw e}}
+async function api(m,p,b){
+  const r=RO();
+  if(!r){ // browser preview only
+    const x=await fetch("http://"+S.ip+"/rest"+p,{method:m,headers:{Authorization:"Basic "+btoa(S.user+":"+S.pass),"Content-Type":"application/json"},body:b?JSON.stringify(b):undefined});
+    return x.json();
+  }
+  let path=p,attrs=Object.assign({},b||{}),q=p.indexOf("?");
+  if(q>=0){path=p.slice(0,q);p.slice(q+1).split("&").forEach(x=>{const k=x.indexOf("=");attrs[x.slice(0,k)]=x.slice(k+1)})}
+  let cmd=path;
+  if(m==="GET")cmd+="/print";else if(m==="PUT")cmd+="/add";
+  else if(m==="DELETE"){const k=path.lastIndexOf("/");attrs[".id"]=path.slice(k+1);cmd=path.slice(0,k)+"/remove"}
+  try{const o=await r.exec({host:S.ip,port:+S.port||8728,user:S.user,pass:S.pass,cmd,attrs:JSON.stringify(attrs)});return JSON.parse(o.data)}
+  catch(e){throw new Error(hint(e.message||e))}
+}
+async function addBatch(cmds,onp){
+  const r=RO();let ok=0,fail=0,err="";
+  for(let i=0;i<cmds.length;i+=10){
+    const ch=cmds.slice(i,i+10);
+    if(r){try{const o=await r.batch({host:S.ip,port:+S.port||8728,user:S.user,pass:S.pass,cmds:JSON.stringify(ch)});ok+=o.ok;fail+=o.fail;err=err||o.error}catch(e){throw new Error(hint(e.message||e))}}
+    else for(const c of ch){try{await api("PUT",c.cmd.replace("/add",""),c.attrs);ok++}catch(e){fail++}}
+    onp&&onp(ok+fail,cmds.length);
+  }
+  return{ok,fail,err};
+}
+async function autoPort(){
+  if(S.ifc)return S.ifc;
+  try{const r=await api("GET","/ip/route?.proplist=dst-address,immediate-gw,gateway");
+    const d=(Array.isArray(r)?r:[]).find(x=>x["dst-address"]==="0.0.0.0/0"&&/%/.test(x["immediate-gw"]||x.gateway||""));
+    if(d)return(d["immediate-gw"]||d.gateway).split("%")[1]}catch(e){}
+  try{const r=await api("GET","/interface?.proplist=name,type,running");const i=(Array.isArray(r)?r:[]).find(x=>x.type==="ether"&&x.running==="true");if(i)return i.name}catch(e){}
+  return"ether1";
+}
 const bps=n=>{n=+n||0;return n>=1e6?(n/1e6).toFixed(1)+" Mbit/s":(n/1e3).toFixed(0)+" Kbit/s"};
 
 // ---- navigation ----
-const TABS=[["home","الرئيسية"],["users","المستخدمون"],["cards","الكروت"],["profiles","الباقات"],["set","الإعدادات"],["about","من نحن"]];
-$("#nav").innerHTML=TABS.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join("");
-$("#nav").onclick=e=>{if(e.target.dataset.t)go(e.target.dataset.t)};
-function go(t){clearInterval(tm);document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));if(["users","cards","profiles"].includes(t)&&!LIVE){needNet();return}({home,users,cards,profiles,set:settings,about})[t]()}
+const TABS=[["home","الرئيسية","house"],["users","المستخدمون","users"],["cards","الكروت","ticket"],["plans","الاشتراك","crown"],["set","الإعدادات","settings"],["about","من نحن","info"]];
+$("#nav").innerHTML=TABS.map(t=>`<button data-t="${t[0]}">${ic(t[2],21)}<span>${t[1]}</span></button>`).join("");
+$("#nav").onclick=e=>{const b=e.target.closest("button");if(b)go(b.dataset.t)};
+function go(t){clearInterval(tm);document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));({home,users,cards,plans,profiles,set:settings,about})[t]();if(t==="profiles")document.querySelectorAll("nav button").forEach(b=>b.classList.remove("on"))}
 
-// ---- networks & home ----
-let LIVE=false;
-const ICONS=["📶","🛜","🏠","🏢","🏪","☕","🏨","🏫","🕌","🏥","🚗","⚡","🌐","📡","🛒","🍔"];
-const GRAD=["linear-gradient(135deg,#3b9cff,#1f5fd1)","linear-gradient(135deg,#2fd68b,#12936a)","linear-gradient(135deg,#ffb347,#f0761c)","linear-gradient(135deg,#ffd65a,#c48c14)","linear-gradient(135deg,#a37bff,#6a3fd1)","linear-gradient(135deg,#ff6a5a,#d6382c)"];
-const MAXN=15;
-const getNet=id=>S.nets.find(n=>n.id===id);
-function useNet(n){Object.assign(S,{cur:n.id,ip:n.ip,user:n.user,pass:n.pass,https:!!n.https,ifc:n.ifc||"ether1"});save()}
-function needNet(){v.innerHTML=`<div class="card"><h3>اختر شبكة أولاً</h3><p class="m">لن يتصل التطبيق بأي راوتر تلقائياً. افتح الرئيسية واضغط على شبكتك للاتصال بها.</p><button class="btn b-blue w" onclick="go('home')">الشبكات</button></div>`}
-function home(){
-  clearInterval(tm);
-  const ns=S.nets;
-  v.innerHTML=`<div class="card"><h3>شبكاتي <small>${ns.length} / ${MAXN}</small></h3><div class="g2" id="nl">${ns.map(n=>`<div class="tile t${n.c}" data-n="${E(n.id)}"><i>${E(n.i)}</i>${E(n.name)}<span class="tag" data-e="${E(n.id)}">✏️ تعديل</span></div>`).join("")}${ns.length<MAXN?`<div class="tile add" id="addn"><i>➕</i>إضافة شبكة</div>`:""}</div>
-  <p class="m" style="margin-top:10px">${ns.length?"اضغط على الشبكة للاتصال بها وإدارتها. لا يتم الاتصال بأي راوتر إلا عند الضغط.":"لا توجد شبكات بعد. أضف شبكتك الأولى وأدخل بيانات الراوتر."}</p></div>
-  <div class="g2"><div class="tile t5" data-g="set"><i>⚙️</i>الإعدادات والتفعيل</div><div class="tile t6" data-g="about"><i>👤</i>من نحن</div></div>`;
+// ---- home ----
+const TILES=[["users","مستخدمو الهوتسبوت","users","#3b9cff,#1f5fd1"],["cards","توليد الكروت","ticket","#2fd68b,#12936a"],["profiles","الباقات والبروفايلات","layers","#ffb347,#f0761c"],["","برمجة المايكروتك","wrench","#ffd65a,#c48c14",1],["","تعديل صفحة الدخول","log-in","#a37bff,#6a3fd1",1],["","الرادار","radar","#22c1c3,#0e7f86",1],["","المالية","wallet","#ff7eb3,#d63a7d",1],["","الموزعون","store","#8e9eab,#4b5d6b",1]];
+async function home(){
+  const h=new Date().getHours();
+  v.innerHTML=`<div class="hello"><h2>${h<12?"صباح الخير":"مساء الخير"}</h2><p>لوحة التحكم</p></div>
+  <div class="card" id="st">جاري الاتصال بالراوتر…</div>
+  <div class="card sum" id="sm"><div><b>—</b><span>متاح</span></div><div><b>—</b><span>متصل الآن</span></div><div><b>—</b><span>منتهي</span></div></div>
+  <div class="card"><h3>${ic("activity")}السرعة المباشرة <small id="pt"></small></h3><div class="g2"><div class="st"><b id="up">—</b><span>رفع</span></div><div class="st"><b id="dn">—</b><span>تحميل</span></div></div></div>
+  <div class="card"><h3>${ic("signal")}جودة الإنترنت</h3><div id="ql" class="m">اضغط للفحص (ping إلى 8.8.8.8)</div><button class="btn b-blue w" id="qb">${ic("zap",18)}فحص الجودة</button></div>
+  <div class="g2">${TILES.map(t=>`<div class="tile" ${t[0]?`data-g="${t[0]}"`:'data-s="1"'}>${t[4]?'<span class="soon">قريباً</span>':""}<div class="ti" style="background:linear-gradient(135deg,${t[3].split(",")[0]},${t[3].split(",")[1]})">${ic(t[2],24)}</div>${t[1]}</div>`).join("")}</div>`;
   v.querySelectorAll("[data-g]").forEach(x=>x.onclick=()=>go(x.dataset.g));
-  const a=$("#addn");if(a)a.onclick=()=>netForm();
-  $("#nl").onclick=e=>{const ed=e.target.closest("[data-e]");if(ed){e.stopPropagation();netForm(ed.dataset.e);return}const t=e.target.closest("[data-n]");if(t)openNet(t.dataset.n)};
-}
-function openNet(id){const n=getNet(id);if(!n)return;useNet(n);LIVE=true;dash()}
-async function dash(){
-  const n=getNet(S.cur)||{i:"📶",name:""};
-  v.innerHTML=`<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${E(n.i)} ${E(n.name)}</b><span><button class="btn s" id="ed">✏️ تعديل</button> <button class="btn s" id="bk">الشبكات</button></span></div>
-  <div class="card" id="st">جاري الاتصال بالراوتر…</div><div class="card"><h3>السرعة المباشرة (${E(S.ifc)})</h3><div class="g2"><div class="st"><b id="up">—</b><span>رفع</span></div><div class="st"><b id="dn">—</b><span>تحميل</span></div></div></div><div class="card"><div class="g2" id="ct"></div></div>
-  <div class="g2"><div class="tile t1" data-g="users"><i>👥</i>مستخدمو الهوتسبوت</div><div class="tile t2" data-g="cards"><i>🎫</i>توليد الكروت</div><div class="tile t3" data-g="profiles"><i>📦</i>الباقات<span class="tag">PRO</span></div><div class="tile t4" id="tvip"><i>🛠</i>برمجة المايكروتك<span class="tag">VIP</span></div></div>`;
-  v.querySelectorAll("[data-g]").forEach(x=>x.onclick=()=>go(x.dataset.g));$("#tvip").onclick=()=>need("vip")&&toast("قريباً");
-  $("#bk").onclick=()=>go("home");$("#ed").onclick=()=>netForm(S.cur);
+  v.querySelectorAll("[data-s]").forEach(x=>x.onclick=()=>toast("هذه الميزة قريباً"));
+  $("#qb").onclick=quality;
   try{
     const r=await api("GET","/system/resource");
-    if(!r||!r["board-name"])throw mkErr("الرد ليس من راوتر مايكروتك. تأكد من العنوان والمنفذ.","bad");
-    const used=Math.round(100-(r["free-memory"]/r["total-memory"])*100);
-    $("#st").innerHTML=`<b class="ok">● متصل</b> <small>${E(r["board-name"])} · RouterOS ${E(r.version)}</small><div class="g2" style="margin-top:10px"><div class="st"><b>${E(r["cpu-load"])}%</b><span>المعالج</span></div><div class="st"><b>${used}%</b><span>الذاكرة</span></div></div><p class="m">مدة التشغيل: ${E(r.uptime)}</p>`;
-    const [u,a,p]=await Promise.all([api("GET","/ip/hotspot/user?.proplist=.id"),api("GET","/ip/hotspot/active?.proplist=.id"),api("GET","/ip/hotspot/user/profile?.proplist=.id")]);
-    $("#ct").innerHTML=[[u.length,"هوتسبوت"],[a.length,"نشط الآن"],[p.length,"بروفايلات"]].map(x=>`<div class="st"><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
-    const poll=async()=>{try{const t=(await api("POST","/interface/monitor-traffic",{interface:S.ifc,once:""}))[0];$("#up").textContent=bps(t["tx-bits-per-second"]);$("#dn").textContent=bps(t["rx-bits-per-second"])}catch(e){}};
+    const pc=(a,b)=>b?Math.round(100-a/b*100):0,ram=pc(r["free-memory"],r["total-memory"]),dk=pc(r["free-hdd-space"],r["total-hdd-space"]),cpu=+r["cpu-load"]||0;
+    const mt=(i,n,x)=>`<div class="meter"><div class="t"><span>${ic(i,16)} ${n}</span><b>${x}%</b></div><div class="bar"><i style="width:${x}%"></i></div></div>`;
+    $("#st").innerHTML=`<h3 style="margin-bottom:4px"><span class="ok">●</span> ${E(r["board-name"])} <small>RouterOS ${E(r.version)}</small></h3><div class="g3" style="margin-top:10px">${mt("cpu","المعالج",cpu)}${mt("memory-stick","الذاكرة",ram)}${mt("hard-drive","التخزين",dk)}</div><p class="m">مدة التشغيل: ${E(r.uptime)}</p>`;
+    const [u,a]=await Promise.all([api("GET","/ip/hotspot/user?.proplist=name,uptime,limit-uptime"),api("GET","/ip/hotspot/active?.proplist=user")]);
+    const ex=u.filter(x=>x["limit-uptime"]&&dur2s(x.uptime)>=dur2s(x["limit-uptime"])).length,un=u.filter(x=>!dur2s(x.uptime)).length;
+    $("#sm").innerHTML=[[un,"متاح","ticket-check","--ok"],[a.length,"متصل الآن","wifi","--acc"],[ex,"منتهي","ticket-x","--bad"]].map(x=>`<div><b style="color:var(${x[3]})">${x[0]}</b><span>${x[1]}</span></div>`).join("");
+    const ifc=await autoPort();$("#pt").textContent="("+ifc+")";
+    const poll=async()=>{try{const t=(await api("POST","/interface/monitor-traffic",{interface:ifc,once:""}))[0];$("#up").textContent=bps(t["tx-bits-per-second"]);$("#dn").textContent=bps(t["rx-bits-per-second"])}catch(e){}};
     poll();tm=setInterval(poll,2500);
-  }catch(e){$("#st").innerHTML=`<b class="bad">● غير متصل</b><p class="m">${E(e.message)}</p><div class="row"><button class="btn b-blue" id="rt">إعادة المحاولة</button><button class="btn b-orange" id="ed2">تعديل بيانات الشبكة</button></div>`;$("#rt").onclick=()=>dash();$("#ed2").onclick=()=>netForm(S.cur)}
+  }catch(e){$("#st").innerHTML=`<b class="bad">● غير متصل</b><p class="m">${E(e.message)}</p><button class="btn b-orange" onclick="go('set')">${ic("settings",18)}إعدادات الاتصال</button>`}
 }
-function netForm(id){
-  clearInterval(tm);
-  const old=id?getNet(id):null;if(id&&!old)return home();
-  if(!old&&S.nets.length>=MAXN){toast("الحد الأقصى "+MAXN+" شبكة");return home()}
-  const n=old||{id:"",name:"",i:ICONS[0],c:1,ip:"192.168.88.1",user:"admin",pass:"",https:false,ifc:"ether1"};
-  let ic=n.i,cc=n.c;
-  v.innerHTML=`<div class="card"><h3>${old?"تعديل الشبكة":"شبكة جديدة"}</h3>
-  <label>اسم الشبكة</label><input id="nn" value="${E(n.name)}" placeholder="مثال: محل الحي">
-  <label>الأيقونة</label><div class="ics" id="ics">${ICONS.map(x=>`<button type="button" class="chip${x===ic?" on":""}" data-i="${x}">${x}</button>`).join("")}</div>
-  <label>اللون</label><div class="ics" id="cls">${GRAD.map((g,k)=>`<button type="button" class="chip tc${k+1===cc?" on":""}" data-c="${k+1}" style="background:${g}"></button>`).join("")}</div></div>
-  <div class="card"><h3>بيانات الراوتر</h3><label>عنوان الراوتر</label><input id="ip" class="ltr" value="${E(n.ip)}">
-  <button class="btn b-green w" id="gw" style="border-radius:8px;margin:8px 0 4px;padding:13px;font-weight:700">📡 جلب عنوان الراوتر تلقائياً</button>
-  <div class="g2"><div><label>المستخدم</label><input id="us" class="ltr" value="${E(n.user)}"></div><div><label>كلمة المرور</label><input id="pw" type="password" class="ltr" value="${E(n.pass)}"></div></div>
-  <label>منفذ المراقبة</label><input id="if" class="ltr" value="${E(n.ifc)}">
-  <label><input type="checkbox" id="hs" ${n.https?"checked":""} style="width:auto"> استخدام HTTPS (www-ssl)</label>
-  <div class="row"><button class="btn b-blue" id="sv">حفظ</button><button class="btn b-green" id="sc">حفظ واتصال</button>${old?`<button class="btn b-red" id="dl">حذف</button>`:""}<button class="btn" id="cn">رجوع</button></div>
-  <p class="m" id="rs"></p><p class="m">يحتاج RouterOS v7.1 أو أحدث، مع تفعيل خدمة www من IP ▸ Services، وأن يكون الموبايل على نفس الشبكة.</p><p class="m"><b>إذا كان الراوتر يشغّل هوتسبوت:</b> الهوتسبوت يعترض المنفذ 80 ويرد بصفحة تسجيل الدخول. نفّذ في الراوتر <span class="ltr" style="display:inline-block">/ip service set www port=8080</span> ثم اكتب العنوان هكذا <span class="ltr" style="display:inline-block">192.168.88.1:8080</span></p></div>`;
-  $("#ics").onclick=e=>{const b=e.target.closest("[data-i]");if(!b)return;ic=b.dataset.i;v.querySelectorAll("#ics .chip").forEach(x=>x.classList.toggle("on",x===b))};
-  $("#cls").onclick=e=>{const b=e.target.closest("[data-c]");if(!b)return;cc=+b.dataset.c;v.querySelectorAll("#cls .chip").forEach(x=>x.classList.toggle("on",x===b))};
-  const collect=()=>({id:n.id||"n"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:$("#nn").value.trim()||("شبكة "+(S.nets.length+(old?0:1))),i:ic,c:cc,ip:normIp($("#ip").value),user:$("#us").value.trim(),pass:$("#pw").value,https:$("#hs").checked,ifc:$("#if").value.trim()||"ether1"});
-  const commit=o=>{
-    if(!o.ip){$("#rs").innerHTML=`<b class="bad">اكتب عنوان الراوتر أولاً</b>`;return false}
-    if(PUBDNS.includes(o.ip.split(":")[0])){$("#rs").innerHTML=`<b class="bad">هذا خادم DNS عام وليس راوتر مايكروتك. اضغط زر جلب العنوان تلقائياً.</b>`;return false}
-    const k=S.nets.findIndex(x=>x.id===o.id);if(k>=0)S.nets[k]=o;else S.nets.push(o);
-    if(S.cur===o.id)useNet(o);save();return true};
-  $("#sv").onclick=()=>{const o=collect();if(commit(o)){toast("تم الحفظ");home()}};
-  $("#sc").onclick=()=>{const o=collect();if(commit(o)){useNet(o);LIVE=true;dash()}};
-  $("#cn").onclick=()=>home();
-  const dl=$("#dl");if(dl)dl.onclick=()=>{if(!confirm("حذف هذه الشبكة من التطبيق؟ (لا يؤثر على الراوتر)"))return;S.nets=S.nets.filter(x=>x.id!==id);if(S.cur===id){S.cur=null;LIVE=false}save();home()};
-  $("#gw").onclick=async()=>{
-    const u=$("#us").value.trim(),p=$("#pw").value,rs=$("#rs");rs.textContent="جاري جلب عنوان الراوتر…";
-    const okm=m=>`<b class="ok">${E(m)}</b>`,bad=m=>`<b class="bad">${E(m)}</b>`;
-    let ip=await getGateway();
-    if(!ip||ip==="0.0.0.0"){
-      rs.textContent="جاري البحث في العناوين الشائعة…";const f=await findRouter(u,p);
-      if(f){$("#ip").value=f.host;$("#hs").checked=f.https;rs.innerHTML=okm("تم العثور على الراوتر: "+f.host)}
-      else rs.innerHTML=bad("تعذّر جلب العنوان. تأكد أن الواي فاي متصل بشبكة الراوتر ثم اكتب العنوان يدوياً.");
-      return}
-    $("#ip").value=ip;let https=false,st=await probe(ip,false,3500,u,p);
-    if(!(st===200||st===401)){st=await probe(ip,true,3500,u,p);https=true}
-    if(st===200||st===401){$("#hs").checked=https;rs.innerHTML=okm("تم جلب عنوان الراوتر: "+ip)}
-    else{$("#hs").checked=false;rs.innerHTML=bad("تم جلب العنوان "+ip+" لكن الراوتر لا يرد على خدمة www. فعّلها من IP ▸ Services.")}
-  };
+async function quality(){
+  const el=$("#ql");el.textContent="جاري الفحص…";
+  try{const r=await api("POST","/tool/ping",{address:"8.8.8.8",count:"4"});const l=r[r.length-1]||{};
+    const rt=parseFloat(String(l["avg-rtt"]||"0").replace(/[^\d.]/g,""))||0,loss=+String(l["packet-loss"]||"0").replace(/\D/g,"")||0;
+    const q=loss>10?["ضعيفة","bad"]:rt<50?["ممتازة","ok"]:rt<100?["جيدة","ok"]:rt<200?["متوسطة","m"]:["ضعيفة","bad"];
+    el.innerHTML=`<b class="${q[1]}">${q[0]}</b> · زمن الاستجابة ${rt} ms · فقد الحزم ${loss}%`}
+  catch(e){el.innerHTML=`<span class="bad">${E(e.message)}</span>`}
 }
 
 // ---- users ----
 async function users(){
-  v.innerHTML=`<div class="card"><input id="q" placeholder="بحث باليوزر أو الدفعة"><div class="row"><button class="btn s b-blue" id="bu">كل اليوزرز</button><button class="btn s b-green" id="ba">النشطون الآن</button></div></div><div class="card" id="ls">جاري التحميل…</div>`;
+  v.innerHTML=`<div class="card"><input id="q" placeholder="بحث باليوزر أو الدفعة"><div class="row"><button class="btn s b-blue" id="bu">${ic("users",16)}كل اليوزرز</button><button class="btn s b-green" id="ba">${ic("wifi",16)}النشطون الآن</button></div></div><div class="card" id="ls">جاري التحميل…</div>`;
   let data=[],mode="u";
   const draw=()=>{const q=$("#q").value.trim().toLowerCase();const f=data.filter(x=>!q||(x.name+(x.comment||"")+(x.user||"")).toLowerCase().includes(q)).slice(0,200);
-    $("#ls").innerHTML=f.length?f.map(x=>mode==="u"?`<div class="it"><div><span class="c">${E(x.name)}</span><br><small>${E(x.profile||"")} · ${E(x.uptime||"")} ${E(x.comment||"")}</small></div><button class="btn s b-red" data-d="${E(x[".id"])}">حذف</button></div>`:`<div class="it"><div><span class="c">${E(x.user)}</span><br><small>${E(x.address||"")} · ${E(x.uptime||"")}</small></div></div>`).join(""):"لا توجد نتائج"};
+    $("#ls").innerHTML=f.length?f.map(x=>mode==="u"?`<div class="it"><div><span class="c">${E(x.name)}</span><br><small>${E(x.profile||"")} · ${E(x.uptime||"")} ${E(x.comment||"")}</small></div><button class="btn s b-red" data-d="${E(x[".id"])}">${ic("trash-2",15)}</button></div>`:`<div class="it"><div><span class="c">${E(x.user)}</span><br><small>${E(x.address||"")} · ${E(x.uptime||"")}</small></div></div>`).join(""):"لا توجد نتائج"};
   const load=async m=>{mode=m;$("#ls").textContent="جاري التحميل…";try{data=await api("GET",m==="u"?"/ip/hotspot/user":"/ip/hotspot/active");draw()}catch(e){$("#ls").innerHTML=`<span class="bad">${E(e.message)}</span>`}};
   $("#q").oninput=draw;$("#bu").onclick=()=>load("u");$("#ba").onclick=()=>load("a");
-  $("#ls").onclick=async e=>{const id=e.target.dataset.d;if(!id||!confirm("حذف هذا اليوزر من الراوتر؟"))return;try{await delRec("/ip/hotspot/user",id);data=data.filter(x=>x[".id"]!==id);draw()}catch(x){toast(x.message)}};
+  $("#ls").onclick=async e=>{const id=e.target.closest("[data-d]")?.dataset.d;if(!id||!confirm("حذف هذا اليوزر من الراوتر؟"))return;try{await api("DELETE","/ip/hotspot/user/"+id);data=data.filter(x=>x[".id"]!==id);draw()}catch(x){toast(x.message)}};
   load("u");
 }
 
 // ---- cards ----
-const DPRE=[["ساعة",0,1,0],["3 ساعات",0,3,0],["12 ساعة",0,12,0],["يوم",1,0,0],["3 أيام",3,0,0],["أسبوع",7,0,0],["شهر",30,0,0]];
-const QPRE=[["500MB",500,"MB"],["1GB",1,"GB"],["2GB",2,"GB"],["5GB",5,"GB"],["10GB",10,"GB"]];
-const durStr=(d,h,m)=>(d?d+"d":"")+(h?h+"h":"")+(m?m+"m":"");
-const durAr=(d,h,m)=>[d&&(d+" يوم"),h&&(h+" ساعة"),m&&(m+" دقيقة")].filter(Boolean).join(" و ");
-const toBytes=(q,u)=>u==="GB"?Math.round(q*1073741824):u==="MB"?Math.round(q*1048576):0;
-const rnd=(n,k)=>{const s=k==="num"?"0123456789":k==="alpha"?"abcdefghjkmnpqrstuvwxyz":"abcdefghjkmnpqrstuvwxyz23456789",a=new Uint32Array(n);crypto.getRandomValues(a);return[...a].map(x=>s[x%s.length]).join("")};
+const DUR=[["1h","ساعة"],["3h","3 ساعات"],["12h","12 ساعة"],["1d","يوم"],["3d","3 أيام"],["7d","أسبوع"],["30d","شهر"]];
+const MODES=[["use","استخدام فعلي","activity"],["first","متواصل من أول دخول","hourglass"],["prof","حسب البروفايل","layers"]];
+function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function drawCard(g,x,y,w,h,o,code,meta){
+  g.save();g.translate(x,y);g.fillStyle="#fff";rr(g,0,0,w,h,h*.1);g.fill();
+  g.strokeStyle=o.col;g.lineWidth=Math.max(1,h*.03);g.setLineDash([h*.09,h*.05]);rr(g,0,0,w,h,h*.1);g.stroke();g.setLineDash([]);
+  const ax=o.al==="center"?w/2:o.al==="right"?w-h*.12:h*.12;
+  g.textBaseline="middle";g.fillStyle=o.col;g.textAlign=o.al;g.direction="rtl";g.font=`700 ${h*o.ts/100}px Tahoma,Arial,sans-serif`;g.fillText(o.title,ax,h*.17);
+  g.fillStyle="#111";g.direction="ltr";g.textAlign="center";g.font=`700 ${h*o.cs/100}px Consolas,"Courier New",monospace`;g.fillText(code,w/2,h*o.cy/100);
+  if(o.foot&&meta){g.fillStyle="#555";g.direction="rtl";g.font=`${h*o.fs/100}px Tahoma,Arial,sans-serif`;g.fillText(meta,w/2,h*.89)}
+  g.restore();
+}
+const A4={w:1654,h:2339,m:47};
+const cell=()=>{const cw=(A4.w-2*A4.m)/S.cols,ch=(A4.h-2*A4.m)/S.rows;return{cw,ch}};
+function ONLOGIN(d){return':local u $user;:if ([:len [/system scheduler find name=$u]]=0) do={/system scheduler add name=$u interval='+d+' start-date=[/system clock get date] start-time=[/system clock get time] on-event=("/ip hotspot user remove [find name=\\"".$u."\\"];/system scheduler remove [find name=\\"".$u."\\"]")}'}
+async function ensureProf(pf,d){
+  const name=pf+"-"+d,ex=await api("GET","/ip/hotspot/user/profile?.proplist=name,rate-limit,shared-users");
+  if(ex.some(x=>x.name===name))return name;
+  const base=ex.find(x=>x.name===pf)||{},b={name,"shared-users":base["shared-users"]||"1","on-login":ONLOGIN(d)};
+  if(base["rate-limit"])b["rate-limit"]=base["rate-limit"];
+  await api("PUT","/ip/hotspot/user/profile",b);return name;
+}
 async function cards(){
   let profs=["default"];try{profs=(await api("GET","/ip/hotspot/user/profile?.proplist=name")).map(x=>x.name)}catch(e){}
-  const d=S.cd;
-  v.innerHTML=`<div class="card"><h3>إنشاء كروت على الراوتر</h3>
+  const o=S.cd;
+  v.innerHTML=`<div class="card"><h3>${ic("ticket")}إنشاء كروت على الراوتر</h3>
   <label>الباقة (Profile)</label><select id="pf">${profs.map(p=>`<option>${E(p)}</option>`).join("")}</select>
-  <label>المدة (تحددها بنفسك)</label><div class="g3"><div><small>أيام</small><input id="dd" type="number" min="0" value="0"></div><div><small>ساعات</small><input id="dh" type="number" min="0" value="1"></div><div><small>دقائق</small><input id="dm" type="number" min="0" value="0"></div></div>
-  <div class="ics" id="dp" style="margin-top:6px">${DPRE.map((p,i)=>`<button type="button" class="chip s" data-i="${i}">${p[0]}</button>`).join("")}</div>
-  <label>حد البيانات (اتركه 0 لبدون حد)</label><div class="g2"><input id="qv" type="number" min="0" step="any" value="0"><select id="qu"><option value="GB">GB جيجا</option><option value="MB">MB ميجا</option></select></div>
-  <div class="ics" id="qp" style="margin-top:6px">${QPRE.map((p,i)=>`<button type="button" class="chip s" data-i="${i}">${p[0]}</button>`).join("")}</div>
-  <div class="g2"><div><label>عدد الكروت ${L.t==="free"?"(حتى 20)":""}</label><input id="n" type="number" value="20" min="1" max="2000"></div><div><label>السعر</label><input id="pr" type="number" value="5"></div>
-  <div><label>طول الكود</label><input id="ln" type="number" value="6" min="3" max="16"></div><div><label>نوع الأحرف</label><select id="kd"><option value="num">أرقام</option><option value="alnum">حروف وأرقام</option><option value="alpha">حروف فقط</option></select></div>
-  <div><label>نمط الكرت</label><select id="md"><option value="same">يوزر = باسورد</option><option value="diff">يوزر وباسورد مختلفان</option></select></div><div><label>طول الباسورد</label><input id="pl" type="number" value="4" min="3" max="16"></div>
+  <label>طريقة احتساب الزمن</label><div class="seg" id="md">${MODES.map(m=>`<button data-m="${m[0]}" class="${S.mode===m[0]?"on":""}">${ic(m[2],22)}<span>${m[1]}</span></button>`).join("")}</div>
+  <div class="g2"><div id="dw"><label>المدة</label><select id="du">${DUR.map(d=>`<option value="${d[0]}"${d[0]==="1d"?" selected":""}>${d[1]}</option>`).join("")}</select></div><div><label>حد البيانات</label><select id="qt"><option value="">بدون</option><option>500M</option><option>1G</option><option>2G</option><option>5G</option><option>10G</option></select></div>
+  <div><label>عدد الكروت</label><input id="n" type="number" value="100" min="1"></div><div><label>السعر</label><input id="pr" type="number" value="5"></div>
+  <div><label>طول الكود</label><input id="ln" type="number" value="8" min="4" max="16"></div><div><label>النوع</label><select id="kd"><option value="num">أرقام</option><option value="alnum">حروف وأرقام</option></select></div>
   <div><label>بادئة</label><input id="px" class="ltr"></div><div><label>اسم الدفعة</label><input id="bn" placeholder="دفعة"></div></div>
-  <button class="btn b-green w" id="go">إنشاء وإضافة للراوتر</button><p class="m" id="pg"></p></div>
-  <div class="card"><h3>تصميم الكرت والطباعة <small>PRO</small></h3>
-  <label>عدد الكروت في الصف</label><div class="ics" id="cc">${[1,2,3,4].map(k=>`<button type="button" class="chip s${+d.cols===k?" on":""}" data-k="${k}">${k}</button>`).join("")}<input id="cl" type="number" min="1" max="8" value="${d.cols}" style="width:80px" placeholder="مخصص"></div>
-  <div class="g2"><div><label>اسم الشبكة على الكرت</label><input id="ss" value="${E(d.ssid)}"></div><div><label>لون الإطار والنص</label><input id="co" type="color" value="${E(d.color)}"></div>
-  <div><label>اسم الجهة (أسفل اليسار)</label><input id="bz" value="${E(d.biz)}"></div><div><label>رقم التواصل</label><input id="ph" value="${E(d.phone)}"></div>
-  <div><label>نص إضافي</label><input id="nt" value="${E(d.note)}" placeholder="اختياري"></div><div><label>العملة</label><input id="cu" value="${E(d.cur)}"></div></div>
-  <label>حجم الخط: <span id="fv">${d.fs}</span></label><input id="fs" type="range" min="0.7" max="1.4" step="0.05" value="${d.fs}">
-  <div class="ics" style="margin-top:8px"><label class="ck"><input type="checkbox" id="sp" ${d.showPrice?"checked":""}> السعر</label><label class="ck"><input type="checkbox" id="sd" ${d.showDur?"checked":""}> المدة</label><label class="ck"><input type="checkbox" id="sq" ${d.showQuota?"checked":""}> حجم البيانات</label><label class="ck"><input type="checkbox" id="sw" ${d.showPass?"checked":""}> الباسورد</label></div>
-  <div class="row"><button class="btn b-orange" id="pt">مشاركة الكروت للطباعة</button></div><p class="m" id="inf"></p></div>`;
-  const upd=()=>{$("#inf").textContent=lastBatch?`آخر دفعة: ${lastBatch.users.length} كارت · نحو ${sheets(lastBatch.users.length,+d.cols||2)} ورقة A4`:"أنشئ دفعة أولاً"};upd();
-  $("#dp").onclick=e=>{const b=e.target.closest("[data-i]");if(!b)return;const p=DPRE[+b.dataset.i];$("#dd").value=p[1];$("#dh").value=p[2];$("#dm").value=p[3]};
-  $("#qp").onclick=e=>{const b=e.target.closest("[data-i]");if(!b)return;const p=QPRE[+b.dataset.i];$("#qv").value=p[1];$("#qu").value=p[2]};
-  $("#cc").onclick=e=>{const b=e.target.closest("[data-k]");if(!b)return;$("#cl").value=b.dataset.k;v.querySelectorAll("#cc .chip").forEach(x=>x.classList.toggle("on",x===b))};
-  $("#fs").oninput=()=>$("#fv").textContent=$("#fs").value;
+  <button class="btn b-green w" id="go">${ic("check",18)}إنشاء وإضافة للراوتر</button></div>
+  <div class="card"><h3>${ic("sliders-horizontal")}تصميم الكرت (${S.rows*S.cols} في الورقة)</h3><canvas id="pv"></canvas>
+  <div class="g2"><div><label>النص العلوي</label><input id="tt" value="${E(o.title)}"></div><div><label>لون الإطار والنص</label><input id="co" type="color" value="${o.col}"></div>
+  <div><label>حجم العنوان</label><input id="ts" type="range" min="8" max="30" value="${o.ts}"></div><div><label>حجم الكود</label><input id="cs" type="range" min="20" max="60" value="${o.cs}"></div>
+  <div><label>موضع الكود</label><input id="cy" type="range" min="30" max="80" value="${o.cy}"></div><div><label>حجم السطر السفلي</label><input id="fs" type="range" min="8" max="22" value="${o.fs}"></div>
+  <div><label>محاذاة العنوان</label><select id="al"><option value="center">وسط</option><option value="right">يمين</option><option value="left">يسار</option></select></div><div><label>السطر السفلي</label><select id="ft"><option value="1">إظهار المدة والسعر</option><option value="0">إخفاء</option></select></div>
+  <div><label>الصفوف</label><input id="rw" type="number" min="1" max="40" value="${S.rows}"></div><div><label>الأعمدة</label><input id="cl" type="number" min="1" max="10" value="${S.cols}"></div></div>
+  <label>اسم الملف</label><input id="fn" value="${E(S.fname)}" placeholder="اسم ملف PDF">
+  <button class="btn b-orange w" id="pt">${ic("file-down",18)}إنشاء ملف PDF ومشاركته</button><p class="m" id="inf"></p></div>`;
+  $("#al").value=o.al;$("#ft").value=o.foot?"1":"0";
+  const meta=()=>{const d=DUR.find(x=>x[0]===$("#du").value)[1];return d+($("#pr").value>0?" · "+$("#pr").value+" ج":"")};
+  const read=()=>{Object.assign(o,{title:$("#tt").value,col:$("#co").value,ts:+$("#ts").value,cs:+$("#cs").value,cy:+$("#cy").value,fs:+$("#fs").value,al:$("#al").value,foot:$("#ft").value==="1"});S.rows=Math.max(1,+$("#rw").value||20);S.cols=Math.max(1,+$("#cl").value||5);S.fname=$("#fn").value;save()};
+  const prev=()=>{read();const{cw,ch}=cell(),c=$("#pv"),W=640,H=Math.round(W*(ch-8)/(cw-8));c.width=W;c.height=H;drawCard(c.getContext("2d"),0,0,W,H,o,"12345678",meta())};
+  v.querySelectorAll("#tt,#co,#ts,#cs,#cy,#fs,#al,#ft,#rw,#cl,#du,#pr").forEach(x=>x.oninput=prev);prev();
+  $("#md").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.mode=b.dataset.m;save();$("#md").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));$("#dw").style.display=S.mode==="prof"?"none":""};
+  $("#dw").style.display=S.mode==="prof"?"none":"";
   $("#go").onclick=async()=>{
-    let n=Math.max(1,Math.min(2000,+$("#n").value||0));if(L.t==="free"&&n>20){n=20;toast("النسخة المجانية: 20 كارت كحد أقصى")}
-    const len=Math.max(3,+$("#ln").value||6),kd=$("#kd").value,md=$("#md").value,pl=Math.max(3,+$("#pl").value||4),px=$("#px").value.replace(/["\\]/g,""),set=new Set(),list=[];
-    while(list.length<n){const u=px+rnd(len,kd);if(!set.has(u)){set.add(u);list.push({u,p:md==="same"?u:rnd(pl,kd)})}}
-    const dd=Math.max(0,Math.floor(+$("#dd").value||0)),dh=Math.max(0,Math.floor(+$("#dh").value||0)),dm=Math.max(0,Math.floor(+$("#dm").value||0));
-    const ds=durStr(dd,dh,dm),qv=+$("#qv").value||0,qu=$("#qu").value,qb=toBytes(qv,qu);
-    const pf=$("#pf").value,cm=($("#bn").value||"batch").replace(/["\\]/g,"");
-    $("#go").disabled=true;let done=0,fail=0,i=0;
-    const work=async()=>{while(i<list.length){const x=list[i++];const b={name:x.u,password:x.p,profile:pf,comment:cm};if(ds)b["limit-uptime"]=ds;if(qb)b["limit-bytes-total"]=String(qb);
-      try{await addRec("/ip/hotspot/user",b);done++}catch(e){fail++;if(fail===1)toast(e.message)}$("#pg").textContent=`تم ${done} من ${list.length}${fail?" · فشل "+fail:""}`}};
-    await Promise.all([work(),work(),work(),work()]);$("#go").disabled=false;
-    lastBatch={users:list.slice(),dur:durAr(dd,dh,dm),quota:qb?(qv+" "+qu):"",price:+$("#pr").value||0};upd();
-    $("#pg").innerHTML=`<b class="${fail?"bad":"ok"}">انتهى: ${done} كارت أُضيف للراوتر${fail?" · "+fail+" فشل":""}</b>`;
+    const n=Math.max(1,+$("#n").value||0),len=+$("#ln").value||8,kd=$("#kd").value,px=$("#px").value.replace(/["\\]/g,""),set=new Set(),list=[];
+    while(list.length<n){const u=px+rnd(len,kd);if(!set.has(u)){set.add(u);list.push(u)}}
+    const du=$("#du").value,qt=$("#qt").value,cm=($("#bn").value||"batch").replace(/["\\]/g,"");let pf=$("#pf").value;
+    $("#ov").style.display="flex";$("#ot").textContent="جاري إنشاء الكروت…";$("#ob").style.width="0";$("#op").textContent="";
+    try{
+      if(S.mode==="first")pf=await ensureProf(pf,du);
+      const cmds=list.map(u=>{const a={name:u,password:u,profile:pf,comment:cm};if(S.mode==="use")a["limit-uptime"]=du;if(qt)a["limit-bytes-total"]=qt;return{cmd:"/ip/hotspot/user/add",attrs:a}});
+      const r=await addBatch(cmds,(d,t)=>{$("#ob").style.width=Math.round(d/t*100)+"%";$("#op").textContent=d+" من "+t});
+      lastBatch={users:list,meta:meta()};
+      $("#ot").textContent=r.fail?`تم ${r.ok} وفشل ${r.fail}`:"تم إنشاء الكروت بنجاح";if(r.err)$("#op").textContent=hint(r.err);
+      setTimeout(()=>$("#ov").style.display="none",r.fail?2600:900);
+    }catch(e){$("#ot").textContent="تعذّر الاتصال";$("#op").textContent=e.message;setTimeout(()=>$("#ov").style.display="none",3000)}
   };
   $("#pt").onclick=async()=>{
-    if(!need("pro"))return;if(!lastBatch)return toast("أنشئ دفعة أولاً");
-    Object.assign(S.cd,{cols:Math.max(1,Math.min(8,+$("#cl").value||2)),ssid:$("#ss").value,color:$("#co").value,biz:$("#bz").value,phone:$("#ph").value,note:$("#nt").value,cur:$("#cu").value,fs:+$("#fs").value||1,showPrice:$("#sp").checked,showDur:$("#sd").checked,showQuota:$("#sq").checked,showPass:$("#sw").checked});save();upd();
-    shareHtml(cardsDoc(lastBatch),"cards-"+Date.now()+".html");
+    if(!need("basic"))return;if(!lastBatch)return toast("أنشئ دفعة أولاً");read();
+    $("#inf").textContent="جاري تجهيز الملف…";await new Promise(r=>setTimeout(r,50));
+    try{await sharePdf(lastBatch);$("#inf").textContent=`${Math.ceil(lastBatch.users.length/(S.rows*S.cols))} ورقة A4`}catch(e){$("#inf").innerHTML=`<span class="bad">${E(e.message)}</span>`}
   };
 }
-function sheets(count,cols){const w=(194-(cols-1)*3)/cols,h=w*674/1280,rows=Math.max(1,Math.floor((281+3)/(h+3)));return Math.max(1,Math.ceil(count/(rows*cols)))}
-function cardsDoc(b){
-  const d=S.cd,n=Math.max(1,Math.min(8,+d.cols||2)),col=/^#[0-9a-fA-F]{6}$/.test(d.color)?d.color:"#000000";
-  const wifi=`<svg viewBox="0 0 64 56" stroke-width="6" stroke-linecap="round"><path d="M4 20Q32-6 60 20"/><path d="M14 31Q32 15 50 31"/><path d="M23 41Q32 33 41 41"/><circle cx="32" cy="50" r="4" fill="${col}" stroke="none"/></svg>`;
-  const info=[d.showDur&&b.dur?`<b>${E(b.dur)}</b>`:"",d.showQuota&&b.quota?`<span>${E(b.quota)}</span>`:"",d.showPrice&&b.price?`<b>${E(b.price)} ${E(d.cur)}</b>`:""].filter(Boolean).join("");
-  const c=x=>{const one=x.u===x.p||!d.showPass;
-    const mid=one?`<div class="m1"><small>الكود</small><b>${E(x.u)}</b></div>`:`<div><small>كلمة المرور</small><b>${E(x.p)}</b></div><div><small>اسم المستخدم</small><b>${E(x.u)}</b></div>`;
-    return `<div class="c"><div class="t">${wifi}<b>${E(d.ssid)}</b>${wifi}</div><div class="m">${mid}</div><div class="f"><div><b>${E(d.biz)}</b><span>${E(d.phone)}</span>${d.note?`<span>${E(d.note)}</span>`:""}</div><div>${info}</div></div></div>`};
-  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>كروت</title><style>
-@page{size:A4;margin:8mm}*{box-sizing:border-box}body{margin:0;background:#fff;font-family:system-ui,Tahoma,Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.g{display:grid;grid-template-columns:repeat(${n},1fr);gap:3mm;direction:ltr;padding:2mm}
-.c{container-type:inline-size;aspect-ratio:1280/674;border:.35mm solid ${col};display:grid;grid-template-rows:1fr 1fr 1fr;break-inside:avoid;background:#fff;color:${col};--k:${+d.fs||1};overflow:hidden}
-.t{display:flex;align-items:center;justify-content:space-between;padding:0 5%;border-bottom:.35mm solid ${col}}
-.t svg{width:11cqw;height:auto;stroke:${col};fill:none}.t b{font-size:calc(7cqw*var(--k));direction:rtl;text-align:center}
-.m{display:grid;grid-template-columns:1fr 1fr;border-bottom:.35mm solid ${col}}
-.m>div{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0}.m>div+div{border-left:.35mm solid ${col}}
-.m small{font-size:calc(3.2cqw*var(--k));direction:rtl}.m b{font-size:calc(8cqw*var(--k));font-family:monospace;direction:ltr}.m .m1{grid-column:1/-1}
-.f{display:grid;grid-template-columns:54% 46%}.f>div{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 3%;direction:rtl;text-align:center;min-width:0}.f>div+div{border-left:.35mm solid ${col}}
-.f b{font-size:calc(4cqw*var(--k))}.f span{font-size:calc(3.6cqw*var(--k))}
-</style></head><body><div class="g">${b.users.map(c).join("")}</div></body></html>`;
+function buildPdf(jpgs){
+  const parts=[],off=[],enc=new TextEncoder();let len=0;
+  const add=x=>{const b=typeof x==="string"?enc.encode(x):x;parts.push(b);len+=b.length};
+  const obj=(n,s)=>{off[n]=len;add(n+" 0 obj\n"+s+"\nendobj\n")};
+  add("%PDF-1.4\n");obj(1,"<</Type/Catalog/Pages 2 0 R>>");
+  obj(2,"<</Type/Pages/Count "+jpgs.length+"/Kids["+jpgs.map((_,i)=>(3+i*3)+" 0 R").join(" ")+"]>>");
+  jpgs.forEach((j,i)=>{const p=3+i*3,c="q 595.28 0 0 841.89 0 0 cm /I Do Q";
+    obj(p,"<</Type/Page/Parent 2 0 R/MediaBox[0 0 595.28 841.89]/Resources<</XObject<</I "+(p+2)+" 0 R>>>>/Contents "+(p+1)+" 0 R>>");
+    obj(p+1,"<</Length "+c.length+">>\nstream\n"+c+"\nendstream");
+    off[p+2]=len;add((p+2)+" 0 obj\n<</Type/XObject/Subtype/Image/Width "+A4.w+"/Height "+A4.h+"/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length "+j.length+">>\nstream\n");add(j);add("\nendstream\nendobj\n")});
+  const tot=3+jpgs.length*3,xr=len;
+  add("xref\n0 "+tot+"\n0000000000 65535 f \n"+off.slice(1,tot).map(o=>String(o).padStart(10,"0")+" 00000 n \n").join("")+"trailer\n<</Size "+tot+"/Root 1 0 R>>\nstartxref\n"+xr+"\n%%EOF");
+  const out=new Uint8Array(len);let p=0;parts.forEach(b=>{out.set(b,p);p+=b.length});return out;
 }
-async function shareHtml(html,name){
-  try{const P=window.Capacitor&&Capacitor.Plugins;
-    const f=await P.Filesystem.writeFile({path:name,data:html,directory:"CACHE",encoding:"utf8"});
-    await P.Share.share({title:"كروت أبو عمار نت",url:f.uri,dialogTitle:"افتح الملف في المتصفح واطبعه"});
-  }catch(e){const w=window.open("","_blank");if(w){w.document.write(html);w.document.close()}else toast("تعذّرت المشاركة: "+e.message)}
+async function sharePdf(b){
+  const {cw,ch}=cell(),per=S.rows*S.cols,jpgs=[],g=4;
+  for(let i=0;i<b.users.length;i+=per){
+    const c=document.createElement("canvas");c.width=A4.w;c.height=A4.h;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,A4.w,A4.h);
+    b.users.slice(i,i+per).forEach((u,k)=>drawCard(x,A4.m+(k%S.cols)*cw+g,A4.m+Math.floor(k/S.cols)*ch+g,cw-2*g,ch-2*g,S.cd,u,b.meta));
+    jpgs.push(b64d(c.toDataURL("image/jpeg",.92).split(",")[1].replace(/\+/g,"-").replace(/\//g,"_")));
+  }
+  const pdf=buildPdf(jpgs),name=(S.fname||"cards").replace(/[\\/:*?"<>|]/g,"_")+".pdf";
+  let bin="";for(let i=0;i<pdf.length;i+=8192)bin+=String.fromCharCode.apply(null,pdf.subarray(i,i+8192));
+  const P=window.Capacitor&&Capacitor.Plugins;
+  if(P&&P.Filesystem&&P.Share){const f=await P.Filesystem.writeFile({path:name,data:btoa(bin),directory:"CACHE"});await P.Share.share({title:name,url:f.uri,dialogTitle:"حفظ أو فتح "+name})}
+  else{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([pdf],{type:"application/pdf"}));a.download=name;a.click()}
+}
+
+// ---- plans ----
+const PLANS=[["أساسي","للشبكات الصغيرة · 30 يوم · راوتر واحد","router","#3b9cff,#1f5fd1"],["احترافي","للشبكات المتوسطة · 30 يوم · 3 راوترات","layers","#2fd68b,#12936a"],["ماكس","للشركات والموزعين · 30 يوم · 5 راوترات","crown","#ffb347,#f0761c"],["ماكس سنوي","غير محدود · 365 يوم","crown","#ffd65a,#c48c14"],["برمجة مايكروتك","جديد أو بعد الفرمطة · 30 يوم","wrench","#a37bff,#6a3fd1"],["برمجة أنتينات","30 يوم","radio-tower","#22c1c3,#0e7f86"]];
+function plans(){
+  v.innerHTML=PLANS.map(p=>`<div class="card"><div class="plan"><div class="ti" style="background:linear-gradient(135deg,${p[3].split(",")[0]},${p[3].split(",")[1]})">${ic(p[2],24)}</div><div><b>${p[0]}</b><p>${p[1]}</p></div></div><a class="btn b-green w" target="_blank" rel="noopener" href="https://wa.me/249961270800?text=${encodeURIComponent("أريد الاشتراك في باقة "+p[0]+" على أبو عمار نت\nمعرّف الجهاز: "+S.did)}">اطلب عبر واتساب</a></div>`).join("");
 }
 
 // ---- profiles ----
 async function profiles(){
-  v.innerHTML=`<div class="card" id="ls">جاري التحميل…</div><div class="card"><h3>باقة جديدة <small>PRO</small></h3><label>الاسم</label><input id="pn" class="ltr" placeholder="1day-2M"><div class="g2"><div><label>السرعة (رفع/تنزيل)</label><input id="rt" class="ltr" placeholder="2M/2M"></div><div><label>عدد الأجهزة</label><input id="sh" type="number" value="1"></div></div><button class="btn b-purple w" id="ad">إضافة للراوتر</button></div>`;
+  v.innerHTML=`<div class="card" id="ls">جاري التحميل…</div><div class="card"><h3>${ic("plus")}باقة جديدة</h3><label>الاسم</label><input id="pn" class="ltr" placeholder="1day-2M"><div class="g2"><div><label>السرعة (رفع/تنزيل)</label><input id="rt" class="ltr" placeholder="2M/2M"></div><div><label>عدد الأجهزة</label><input id="sh" type="number" value="1"></div></div><button class="btn b-purple w" id="ad">إضافة للراوتر</button></div>`;
   const load=async()=>{try{const d=await api("GET","/ip/hotspot/user/profile");$("#ls").innerHTML=d.map(p=>`<div class="it"><div><span class="c">${E(p.name)}</span><br><small>${E(p["rate-limit"]||"بدون حد")} · أجهزة: ${E(p["shared-users"]||"1")}</small></div></div>`).join("")}catch(e){$("#ls").innerHTML=`<span class="bad">${E(e.message)}</span>`}};
-  $("#ad").onclick=async()=>{if(!need("pro"))return;const n=$("#pn").value.trim().replace(/["\\]/g,"");if(!n)return toast("اكتب اسم الباقة");
+  $("#ad").onclick=async()=>{if(!need("basic"))return;const n=$("#pn").value.trim().replace(/["\\]/g,"");if(!n)return toast("اكتب اسم الباقة");
     const b={name:n,"shared-users":$("#sh").value||"1"};if($("#rt").value.trim())b["rate-limit"]=$("#rt").value.trim();
-    try{await addRec("/ip/hotspot/user/profile",b);toast("تمت الإضافة");load()}catch(e){toast(e.message)}};
+    try{await api("PUT","/ip/hotspot/user/profile",b);toast("تمت الإضافة");load()}catch(e){toast(e.message)}};
   load();
 }
 
-
 // ---- about ----
-const IC={"wa": "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z", "ms": "M12 0C5.24 0 0 4.952 0 11.64c0 3.499 1.434 6.521 3.769 8.61a.96.96 0 0 1 .323.683l.065 2.135a.96.96 0 0 0 1.347.85l2.381-1.053a.96.96 0 0 1 .641-.046A13 13 0 0 0 12 23.28c6.76 0 12-4.952 12-11.64S18.76 0 12 0m6.806 7.44c.522-.03.971.567.63 1.094l-4.178 6.457a.707.707 0 0 1-.977.208l-3.87-2.504a.44.44 0 0 0-.49.007l-4.363 3.01c-.637.438-1.415-.317-.995-.966l4.179-6.457a.706.706 0 0 1 .977-.21l3.87 2.505c.15.097.344.094.491-.007l4.362-3.008a.7.7 0 0 1 .364-.13", "tt": "M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z", "yt": "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"};
 function about(){
   const lk=[["واتساب","+249 961 270 800","https://wa.me/249961270800","#25D366",IC.wa],["ماسنجر","فيسبوك","https://www.facebook.com/share/1CcAfuvcP1/","#0A7CFF",IC.ms],["تيك توك","@uabdallh113","https://www.tiktok.com/@uabdallh113","#000",IC.tt],["يوتيوب","@abdallh113","https://youtube.com/@abdallh113?si=kHKg1GT1TsEijdlS","#FF0033",IC.yt]];
   v.innerHTML=`<div class="card ab"><img class="av" src="owner.jpg" alt=""><h2>التقني أبو عمار</h2><p>للرقمنة والحلول البرمجية</p><p>تطبيقات، حلول برمجية، وإدارة شبكات الإنترنت والمايكروتك.</p></div>
   <div class="card soc"><h3>تواصل معنا</h3>${lk.map(x=>`<a href="${x[2]}" target="_blank" rel="noopener"><i style="background:${x[3]}"><svg viewBox="0 0 24 24"><path d="${x[4]}"/></svg></i><span><b>${x[0]}</b><small>${E(x[1])}</small></span></a>`).join("")}</div>
-  <p class="m" style="text-align:center">أبو عمار نت · الإصدار 1.0</p>`;
+  <p class="m" style="text-align:center">أبو عمار نت · الإصدار 1.1</p>`;
 }
 
 // ---- settings ----
 function settings(){
-  const st=L.t==="free"?"النسخة المجانية":"نسخة "+L.t.toUpperCase()+(L.c?" · "+L.c:"");
-  v.innerHTML=`<div class="card"><h3>الشبكات</h3><p class="m">لديك ${S.nets.length} من ${MAXN} شبكة.</p><button class="btn b-blue w" onclick="go('home')">إدارة الشبكات</button></div>
-  <div class="card"><h3>تفعيل النسخة الاحترافية</h3><p class="m">الحالة: <b>${E(st)}</b></p><p class="m">معرّف جهازك:</p><div class="c ltr" style="font-size:20px;font-weight:700;margin:4px 0 10px">${E(S.did)}</div><a class="btn b-green w" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/249961270800?text=${encodeURIComponent("أريد تفعيل نسخة PRO على أبو عمار نت\nمعرّف الجهاز: "+S.did)}">طلب التفعيل عبر واتساب</a><button class="btn b-blue w" id="rf">تحديث حالة التفعيل</button><p class="m" id="lr"></p><label>أو كود الترخيص</label><input id="lc" class="ltr" placeholder="الصق الكود هنا" value="${E(S.lic)}"><button class="btn w" id="al">تفعيل بالكود</button></div>`;
-  $("#rf").onclick=async()=>{$("#lr").textContent="جاري التحديث…";await applyLic();$("#lr").innerHTML=L.t==="free"?`<b class="bad">لم يتم التفعيل بعد. أرسل المعرّف عبر واتساب.</b>`:`<b class="ok">مفعّل: ${L.t.toUpperCase()}</b>`};
-  $("#al").onclick=async()=>{S.lic=$("#lc").value.trim();const o=await checkLic(S.lic);if(o){save();await applyLic();$("#lr").innerHTML=`<b class="ok">تم التفعيل: ${o.t.toUpperCase()}${o.e?" حتى "+E(o.e):""}</b>`}else{$("#lr").innerHTML=`<b class="bad">كود غير صالح أو منتهي</b>`}};
+  v.innerHTML=`<div class="card"><h3>${ic("sun")}المظهر</h3><div class="seg">${[["light","فاتح","sun"],["dark","داكن","moon"],["auto","النظام","smartphone"]].map(t=>`<button data-th="${t[0]}" class="${S.theme===t[0]?"on":""}">${ic(t[2],22)}<span>${t[1]}</span></button>`).join("")}</div></div>
+  <div class="card"><h3>${ic("router")}الاتصال بالراوتر</h3><label>عنوان الراوتر</label><input id="ip" class="ltr" value="${E(S.ip)}"><div class="g2"><div><label>المستخدم</label><input id="us" class="ltr" value="${E(S.user)}"></div><div><label>كلمة المرور</label><input id="pw" type="password" class="ltr" value="${E(S.pass)}"></div><div><label>منفذ API</label><input id="po" type="number" value="${E(S.port)}"></div><div><label>منفذ المراقبة</label><input id="if" class="ltr" value="${E(S.ifc)}" placeholder="تلقائي"></div></div>
+  <button class="btn b-blue w" id="sv">${ic("zap",18)}حفظ واختبار الاتصال</button><p class="m" id="rs"></p><p class="m">يعمل مع RouterOS v6 و v7. فعّل خدمة api من IP ▸ Services، ويكون الموبايل على نفس شبكة الراوتر.</p></div>
+  ${L.t!=="free"?`<div class="card"><h3>${ic("circle-check")}الاشتراك مفعّل</h3><p class="ok" style="margin:0"><b>${TN[L.t]}</b>${L.c?" · "+E(L.c):""}</p><p class="m">مرتبط بهذا الجهاز فقط.</p></div>`:
+  `<div class="card"><h3>${ic("crown")}تفعيل الاشتراك</h3><p class="m">معرّف جهازك:</p><div class="c ltr" style="font-size:20px;font-weight:700;margin:4px 0 10px">${E(S.did)}</div><a class="btn b-green w" target="_blank" rel="noopener" href="https://wa.me/249961270800?text=${encodeURIComponent("أريد تفعيل اشتراك على أبو عمار نت\nمعرّف الجهاز: "+S.did)}">طلب التفعيل عبر واتساب</a><button class="btn b-blue w" id="rf">${ic("rotate-cw",18)}تحديث حالة التفعيل</button><p class="m" id="lr"></p><label>أو كود الترخيص</label><input id="lc" class="ltr" placeholder="الصق الكود هنا"><button class="btn w" id="al">تفعيل بالكود</button></div>`}`;
+  v.querySelectorAll("[data-th]").forEach(b=>b.onclick=()=>{S.theme=b.dataset.th;save();theme();settings()});
+  $("#sv").onclick=async()=>{S.ip=$("#ip").value.trim();S.user=$("#us").value.trim();S.pass=$("#pw").value;S.port=+$("#po").value||8728;S.ifc=$("#if").value.trim();save();$("#rs").textContent="جاري الاختبار…";
+    try{const r=await api("GET","/system/resource");$("#rs").innerHTML=`<b class="ok">تم الاتصال: ${E(r["board-name"])} · v${E(r.version)}</b>`}catch(e){$("#rs").innerHTML=`<b class="bad">${E(e.message)}</b>`}};
+  const rf=$("#rf");if(rf){rf.onclick=async()=>{$("#lr").textContent="جاري التحديث…";await applyLic();L.t==="free"?$("#lr").innerHTML=`<b class="bad">لم يتم التفعيل بعد. أرسل المعرّف عبر واتساب.</b>`:settings()};
+    $("#al").onclick=async()=>{const c=$("#lc").value.trim(),o=await checkLic(c);if(o){S.lic=c;save();await applyLic();settings()}else $("#lr").innerHTML=`<b class="bad">كود غير صالح أو لجهاز آخر</b>`}}
 }
+theme();matchMedia("(prefers-color-scheme:dark)").addEventListener("change",theme);
 applyLic().then(()=>go("home"));
 </script>
 </body>
