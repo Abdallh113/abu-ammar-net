@@ -92,8 +92,10 @@ canvas{width:100%;border:1px solid var(--ln);border-radius:12px;background:#fff}
 <!-- MAKE -->
 <section class="pg" id="p-make"><div class="wrap"><h1>إنشاء كروت</h1>
 <label>الشبكة</label><select id="mkNet"></select>
+<button class="btn ghost" style="margin:0 0 10px" onclick="go('nets');addNet()">+ إضافة واي فاي جديد</button>
 <div class="row"><div><label>العدد</label><input id="mkN" type="number" value="50" min="1" max="1000"></div><div><label>طول الكود</label><input id="mkL" type="number" value="6" min="4" max="12"></div></div>
 <div class="row"><div><label>المدة (ساعات)</label><input id="mkH" type="number" value="24"></div><div><label>الحجم (GB)</label><input id="mkG" type="number" value="0"></div></div>
+<label>اسم البروفايل في المايكروتك</label><input id="mkP" value="default" dir="ltr">
 <label>طريقة احتساب الزمن</label><div id="modes"></div>
 <button class="btn" onclick="makeCards()">إنشاء الكروت</button>
 <div class="card" id="mkOut" style="display:none;margin-top:12px;text-align:center"></div></div></section>
@@ -114,6 +116,12 @@ canvas{width:100%;border:1px solid var(--ln);border-radius:12px;background:#fff}
 
 <!-- NETS -->
 <section class="pg" id="p-nets"><div class="wrap"><h1>الشبكات</h1>
+<button class="btn" style="margin:10px 0" onclick="addNet()">+ إضافة واي فاي (الاسم، الأدمن، كلمة السر)</button>
+<div id="nform" style="display:none;position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:calc(16px + env(safe-area-inset-top)) 16px 28px"><div style="max-width:640px;margin:auto"><h1>إضافة واي فاي</h1><div class="sub" style="margin-bottom:14px">أدخل بيانات دخول الراوتر عشان التطبيق يضيف الكروت</div><div class="card"><label>1. اسم الواي فاي</label><input id="nN" placeholder="مثال: شبكة الحي">
+<label>عنوان الراوتر (IP) مثال 192.168.88.1</label><input id="nI" value="192.168.88.1" dir="ltr">
+<div class="row"><div><label>2. اسم الأدمن</label><input id="nU" value="admin" dir="ltr"></div><div><label>3. كلمة سر الأدمن</label><input id="nP" type="password" dir="ltr"></div></div>
+<label>المنفذ (اتركه فارغاً للافتراضي 80)</label><input id="nT" type="number" dir="ltr">
+<button class="btn" onclick="saveNet()">حفظ</button><button class="btn ghost" onclick="saveNet(true)">حفظ واختبار الاتصال</button><button class="btn ghost" style="border-color:var(--mt);color:var(--mt)" onclick="$('nform').style.display='none'">إلغاء</button></div></div></div>
 <div class="card" id="nlist" style="margin-top:12px"></div></div>
 <button class="fab" onclick="addNet()"><svg class="i"><use href="#plus"/></svg>شبكة جديدة</button></section>
 
@@ -149,7 +157,7 @@ canvas{width:100%;border:1px solid var(--ln);border-radius:12px;background:#fff}
 const $=id=>document.getElementById(id);
 const L=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}};
 const S=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-let cards=L('cards',[]),nets=L('nets',[]),cfg=L('cfg',{theme:'system',mode:1}),act=L('act',null),mode=cfg.mode;
+let lastBatch=[],cards=L('cards',[]),nets=L('nets',[]).map(n=>typeof n=='string'?{name:n,ip:'192.168.88.1',user:'admin',pass:'',port:''}:n),cfg=L('cfg',{theme:'system',mode:1}),act=L('act',null),mode=cfg.mode;
 const MODES=[[1,'clock','استخدام فعلي','يُحسب الزمن أثناء الاتصال فقط'],[2,'link','متواصل من أول دخول','يبدأ العد من أول اتصال حتى لو انقطع'],[3,'list','حسب البروفايل','يتبع إعدادات البروفايل في المايكروتك']];
 function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2200)}
 function go(p){document.querySelectorAll('.pg').forEach(e=>e.classList.toggle('on',e.id=='p-'+p));
@@ -172,19 +180,46 @@ function quality(){const c=navigator.connection,b=$('qbox');b.style.display='blo
  b.innerHTML=c?`النوع: ${c.effectiveType}<br>السرعة التقريبية: ${c.downlink} Mbps<br>التأخر: ${c.rtt} ms`:'المتصفح لا يوفر بيانات الجودة'}
 function radar(){toast('الرادار قيد التطوير')}
 function code(n){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';const r=crypto.getRandomValues(new Uint8Array(n));for(const x of r)s+=a[x%a.length];return s}
-function fillNets(){$('mkNet').innerHTML=nets.length?nets.map(n=>`<option>${n}</option>`).join(''):'<option>الشبكة الافتراضية</option>'}
+function fillNets(){$('mkNet').innerHTML=nets.length?nets.map(n=>`<option>${n.name}</option>`).join(''):'<option>الشبكة الافتراضية</option>'}
 function makeCards(){const n=+$('mkN').value,l=+$('mkL').value,net=$('mkNet').value,t=new Date();
- const add=[];for(let i=0;i<n;i++)add.push({id:Date.now()+i,u:code(l),p:code(l),net,h:+$('mkH').value,g:+$('mkG').value,mode,st:'new'});
- cards=cards.concat(add);S('cards',cards);stats();
+ const add=[];for(let i=0;i<n;i++)add.push({id:Date.now()+i,u:code(l),p:code(l),net,h:+$('mkH').value,g:+$('mkG').value,prof:$('mkP').value.trim()||'default',mode,st:'new',sent:0});
+ cards=cards.concat(add);lastBatch=add.map(c=>c.id);S('cards',cards);stats();
  const hh=String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
- const o=$('mkOut');o.style.display='block';o.innerHTML=`<div style="font-size:32px;font-weight:800;color:var(--ac)">${n}</div>تم الإنشاء الساعة ${hh}`}
+ const o=$('mkOut');o.style.display='block';o.innerHTML=`<div style="font-size:32px;font-weight:800;color:var(--ac)">${n}</div>تم الإنشاء الساعة ${hh}<button class="btn" onclick="sendCards()">إضافة للمايكروتك</button><div class="sub" id="sendSt" style="margin-top:8px"></div>`}
 function renderUsers(){const e=$('ulist');if(!cards.length){e.innerHTML='<div class="sub" style="padding:12px;text-align:center">لا توجد كروت بعد. أنشئ كروتاً من تبويب الكروت.</div>';return}
  const nm={new:['جديد',''],act:['متصل','a'],exp:['منتهي','x']};
  e.innerHTML=cards.slice(-100).reverse().map(c=>`<div class="li"><div class="n">${c.u}<small>${c.net}، ${c.h} ساعة</small></div><span class="pill ${nm[c.st][1]}" onclick="cyc(${c.id})">${nm[c.st][0]}</span></div>`).join('')}
 function cyc(id){const c=cards.find(x=>x.id==id),o=['new','act','exp'];c.st=o[(o.indexOf(c.st)+1)%3];S('cards',cards);stats();renderUsers()}
-function renderNets(){$('nlist').innerHTML=nets.length?nets.map((n,i)=>`<div class="li"><svg class="i" style="color:var(--ac)"><use href="#net"/></svg><div class="n">${n}<small>${cards.filter(c=>c.net==n).length} كرت</small></div><span class="pill x" onclick="delNet(${i})">حذف</span></div>`).join(''):'<div class="sub" style="padding:12px;text-align:center">لا توجد شبكات. أضف أول شبكة بالزر أسفل الشاشة.</div>'}
-function addNet(){const n=prompt('اسم الشبكة أو المكان');if(n&&n.trim()){nets.push(n.trim());S('nets',nets);renderNets()}}
+function renderNets(){$('nlist').innerHTML=nets.length?nets.map((n,i)=>`<div class="li"><svg class="i" style="color:var(--ac)"><use href="#net"/></svg><div class="n">${n.name}<small dir="ltr" style="text-align:right">${n.ip}، ${cards.filter(c=>c.net==n.name).length} كرت</small></div><span class="pill a" onclick="testNet(${i})">اختبار</span><span class="pill" onclick="editNet(${i})">تعديل</span><span class="pill x" onclick="delNet(${i})">حذف</span></div>`).join(''):'<div style="padding:24px 12px;text-align:center"><svg class="i" style="width:48px;height:48px;color:var(--ac)"><use href="#net"/></svg><div style="font-weight:700;margin:8px 0">لا توجد شبكات بعد</div><div class="sub">اضغط الزر الأخضر بالأعلى لإضافة أول واي فاي</div></div>'}
+let editI=-1;
+function addNet(){editI=-1;['nN','nP','nT'].forEach(k=>$(k).value='');$('nI').value='192.168.88.1';$('nU').value='admin';$('nform').style.display='block';$('nN').focus();scrollTo(0,0)}
+function editNet(i){const n=nets[i];editI=i;$('nN').value=n.name;$('nI').value=n.ip;$('nU').value=n.user;$('nP').value=n.pass;$('nT').value=n.port||'';$('nform').style.display='block';scrollTo(0,0)}
+function saveNet(t){let idx;const n=$('nN').value.trim(),ip=$('nI').value.trim();if(!n||!ip){toast('اكتب الاسم وعنوان الراوتر');return}
+ const o={name:n,ip,user:$('nU').value.trim(),pass:$('nP').value,port:$('nT').value};if(editI>=0){cards.forEach(c=>{if(c.net==nets[editI].name)c.net=n});S('cards',cards);nets[editI]=o;idx=editI;editI=-1}else{nets.push(o);idx=nets.length-1}S('nets',nets);$('nform').style.display='none';$('nN').value='';renderNets();if(t)testNet(idx)}
 function delNet(i){if(confirm('حذف الشبكة؟')){nets.splice(i,1);S('nets',nets);renderNets()}}
+// MikroTik REST (RouterOS v7) - manual only, never automatic
+async function rr(n,m,path,body,auth){let r,t;
+ try{r=await fetch(`http://${n.ip}${n.port?':'+n.port:''}/rest${path}`,{method:m,cache:'no-store',headers:{Authorization:'Basic '+btoa(auth||(n.user+':'+n.pass)),'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});t=typeof r.text=='function'?await r.text():JSON.stringify(r.data)}
+ catch(e){const x=new Error('net');x.code=0;throw x}
+ let j;try{j=JSON.parse(t)}catch(e){const x=new Error('رد غير متوقع (ليس من واجهة REST): '+String(t).slice(0,60));x.code=-1;throw x}
+ const st=r.status;if(st>=400||(j&&!Array.isArray(j)&&j.error)){const x=new Error((j&&j.message)||('HTTP '+st));x.code=(j&&j.error)||st;throw x}
+ return j}
+function errMsg(e){return e.code==401?'اسم المستخدم أو كلمة السر خطأ':e.code==0?'تعذر الوصول للراوتر: تأكد من IP وخدمة www، وأن التطبيق مثبّت كـ APK وليس مفتوحاً من المتصفح':e.code==-1?e.message:'رفض الراوتر: '+e.message}
+async function verifyRouter(n){let fake=false;
+ try{await rr(n,'GET','/system/resource',null,n.user+':'+code(10));fake=true}catch(e){if(e.code!=401)throw e}
+ if(fake)throw Object.assign(new Error('اتصال وهمي: الرد جاء رغم كلمة سر عشوائية، فهو ليس رد راوتر حقيقي (غالباً صفحة الهوتسبوت أو جهاز آخر)'),{code:-1});
+ const r=await rr(n,'GET','/system/resource');if(!r.version)throw Object.assign(new Error('الرد لا يحتوي بيانات راوتر'),{code:-1});return r}
+async function testNet(i){const n=nets[i];toast('جاري الاتصال...');try{const r=await verifyRouter(n);toast('تم الاتصال: '+(r['board-name']||'راوتر')+' - RouterOS '+r.version)}catch(e){toast(errMsg(e))}}
+async function sendCards(){const st=$('sendSt'),batch=cards.filter(c=>lastBatch.includes(c.id)&&!c.sent);if(!batch.length){st.textContent='لا توجد كروت جديدة للإرسال';return}
+ const n=nets.find(x=>x.name==batch[0].net);if(!n){st.textContent='اختر شبكة محفوظة فيها بيانات الراوتر';return}
+ st.textContent='جاري التحقق من الراوتر...';try{await verifyRouter(n)}catch(e){st.textContent=errMsg(e);return}
+ let ok=0,fail=0,last='';for(const c of batch){st.textContent=`جاري الإرسال ${ok+fail}/${batch.length}`;
+  const b={name:c.u,password:c.p,profile:c.prof,comment:'AbuAmmarNet'};
+  if(c.mode!=3)b['limit-uptime']=c.h+'h';if(c.mode==2)b.comment+=' first-login';if(c.g>0)b['limit-bytes-total']=String(Math.round(c.g*1073741824));
+  try{const r=await rr(n,'PUT','/ip/hotspot/user',b);if(!r['.id'])throw Object.assign(new Error('لم يرجع الراوتر رقم الكرت'),{code:-1});c.sent=1;ok++}catch(e){fail++;last=errMsg(e);if(e.code==401||e.code==0)break}}
+ S('cards',cards);
+ let ver='';try{const l=await rr(n,'GET','/ip/hotspot/user?comment=AbuAmmarNet');ver=`، الموجود فعلياً في الراوتر ${l.length}`}catch(e){}
+ st.textContent=`تمت إضافة ${ok} كرت`+(fail?`، فشل ${fail}: ${last}`:'')+ver}
 // card drawing
 function T(){return{t:$('tT').value,b:$('tB').value,w:$('tW').value,x:$('tX').value,s:$('tS').value/100,k:$('tK').value}}
 function drawCard(c,x,y,w,h,card,t){const f=h/110*t.s;c.save();c.translate(x,y);c.fillStyle='#fff';c.fillRect(0,0,w,h);c.strokeStyle='#222';c.lineWidth=Math.max(1,h/90);c.strokeRect(0,0,w,h);
