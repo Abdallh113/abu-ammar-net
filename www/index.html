@@ -186,7 +186,7 @@ function makeCards(){const n=+$('mkN').value,l=+$('mkL').value,net=$('mkNet').va
  const add=[];for(let i=0;i<n;i++)add.push({id:Date.now()+i,u:code(l),p:code(l),net,h:+$('mkH').value,g:+$('mkG').value,prof:$('mkP').value.trim()||'default',mode,st:'new',sent:0});
  cards=cards.concat(add);lastBatch=add.map(c=>c.id);S('cards',cards);stats();
  const hh=String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
- const o=$('mkOut');o.style.display='block';o.innerHTML=`<div style="font-size:32px;font-weight:800;color:var(--ac)">${n}</div>تم الإنشاء الساعة ${hh}<button class="btn" onclick="sendCards()">إضافة للمايكروتك</button><div class="sub" id="sendSt" style="margin-top:8px"></div>`}
+ const o=$('mkOut');o.style.display='block';o.innerHTML=`<div style="font-size:32px;font-weight:800;color:var(--ac)">${n}</div>تم الإنشاء الساعة ${hh}<button class="btn" onclick="sendCards()">إضافة مباشرة للمايكروتك (v7)</button><button class="btn ghost" onclick="exportRsc()">تصدير ملف للراوتر (كل النسخ)</button><div class="sub" id="sendSt" style="margin-top:8px"></div>`}
 function renderUsers(){const e=$('ulist');if(!cards.length){e.innerHTML='<div class="sub" style="padding:12px;text-align:center">لا توجد كروت بعد. أنشئ كروتاً من تبويب الكروت.</div>';return}
  const nm={new:['جديد',''],act:['متصل','a'],exp:['منتهي','x']};
  e.innerHTML=cards.slice(-100).reverse().map(c=>`<div class="li"><div class="n">${c.u}<small>${c.net}، ${c.h} ساعة</small></div><span class="pill ${nm[c.st][1]}" onclick="cyc(${c.id})">${nm[c.st][0]}</span></div>`).join('')}
@@ -208,14 +208,22 @@ async function findIp(){toast('جاري البحث عن الراوتر...');cons
  if(ros){$('nI').value=ros[0];toast('تم العثور على مايكروتك: '+ros[0])}
  else if(web){$('nI').value=web[0];toast('وجدت جهازاً يرد على '+web[0]+' لكنه لا يدعم REST، قد تكون نسخة v6')}
  else toast('لم أجد راوتر. تأكد أن الجوال متصل بواي فاي الراوتر وأن خدمة www شغالة')}
+let lastRsc='';
+function buildRsc(b){return b.map(c=>{let l=`/ip hotspot user add name=${c.u} password=${c.p} profile="${c.prof}" comment=AbuAmmarNet`;if(c.mode!=3)l+=` limit-uptime=${c.h}h`;if(c.g>0)l+=` limit-bytes-total=${Math.round(c.g*1073741824)}`;return l}).join('\n')}
+function showRsc(b,msg){lastRsc=buildRsc(b);$('sendSt').innerHTML=`${msg}<div class="row" style="margin-top:8px"><button class="btn ghost" onclick="rscCopy()">نسخ الأوامر</button><button class="btn ghost" onclick="rscFile()">حفظ / مشاركة ملف</button></div><div class="sub" style="margin-top:8px;text-align:right">الطريقة: Winbox ثم New Terminal والصق الأوامر. أو ارفع الملف من Files ونفذ: /import file-name=اسم_الملف</div>`}
+function exportRsc(){const b=cards.filter(c=>lastBatch.includes(c.id));if(!b.length){toast('لا توجد كروت');return}showRsc(b,`جاهز: ${b.length} كرت`)}
+function rscCopy(){navigator.clipboard.writeText(lastRsc).then(()=>toast('تم النسخ'),()=>toast('تعذر النسخ، استخدم الملف'))}
+async function rscFile(){const name=($('tF').value.trim()||'cards')+'.rsc',f=new File([lastRsc],name,{type:'text/plain'});
+ if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:name});return}catch(e){}}
+ const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=name;a.click();toast('تم إنشاء '+name)}
 // MikroTik REST (RouterOS v7) - manual only, never automatic
 async function rr(n,m,path,body,auth){let r,t;
  try{r=await Promise.race([new Promise((_,no)=>setTimeout(()=>no(new Error('انتهت المهلة، الراوتر لا يرد')),window.TO||8000)),fetch(`http://${n.ip}${n.port?':'+n.port:''}/rest${path}`,{method:m,cache:'no-store',headers:{Authorization:'Basic '+btoa(auth||(n.user+':'+n.pass)),'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined})]);t=typeof r.text=='function'?await r.text():JSON.stringify(r.data)}
  catch(e){const x=new Error(String((e&&e.message)||e));x.code=0;throw x}
- let j;try{j=JSON.parse(t)}catch(e){const x=new Error('رد غير متوقع (ليس من واجهة REST): '+String(t).slice(0,60));x.code=-1;throw x}
+ let j;try{j=JSON.parse(t)}catch(e){const x=new Error('رد غير متوقع (ليس من واجهة REST): '+String(t).slice(0,60));x.code=(r.status==404?404:-1);throw x}
  const st=r.status;if(st>=400||(j&&!Array.isArray(j)&&j.error)){const x=new Error((j&&j.message)||('HTTP '+st));x.code=(j&&j.error)||st;throw x}
  return j}
-function errMsg(e){return e.code==401?'اسم المستخدم أو كلمة السر خطأ':e.code==0?'تعذر الوصول للراوتر ('+e.message+'). تأكد أن الجوال متصل بواي فاي الراوتر نفسه وأن IP صحيح وخدمة www شغالة':e.code==-1?e.message:'رفض الراوتر: '+e.message}
+function errMsg(e){return e.code==404?'الراوتر لا يدعم REST (RouterOS v6): استخدم تصدير ملف .rsc':e.code==401?'اسم المستخدم أو كلمة السر خطأ':e.code==0?'تعذر الوصول للراوتر ('+e.message+'). تأكد أن الجوال متصل بواي فاي الراوتر نفسه وأن IP صحيح وخدمة www شغالة':e.code==-1?e.message:'رفض الراوتر: '+e.message}
 async function verifyRouter(n){let fake=false;
  try{await rr(n,'GET','/system/resource',null,n.user+':'+code(10));fake=true}catch(e){if(e.code!=401)throw e}
  if(fake)throw Object.assign(new Error('اتصال وهمي: الرد جاء رغم كلمة سر عشوائية، فهو ليس رد راوتر حقيقي (غالباً صفحة الهوتسبوت أو جهاز آخر)'),{code:-1});
@@ -223,7 +231,7 @@ async function verifyRouter(n){let fake=false;
 async function testNet(i){const n=nets[i];toast('جاري الاتصال...');try{const r=await verifyRouter(n);toast('تم الاتصال: '+(r['board-name']||'راوتر')+' - RouterOS '+r.version)}catch(e){toast(errMsg(e))}}
 async function sendCards(){const st=$('sendSt'),batch=cards.filter(c=>lastBatch.includes(c.id)&&!c.sent);if(!batch.length){st.textContent='لا توجد كروت جديدة للإرسال';return}
  const n=nets.find(x=>x.name==batch[0].net);if(!n){st.textContent='اختر شبكة محفوظة فيها بيانات الراوتر';return}
- st.textContent='جاري التحقق من الراوتر...';try{await verifyRouter(n)}catch(e){st.textContent=errMsg(e);return}
+ st.textContent='جاري التحقق من الراوتر...';try{await verifyRouter(n)}catch(e){if(e.code==404){showRsc(batch,'الراوتر نسخة قديمة (v6) لا يدعم الإضافة المباشرة. استخدم الملف:');return}st.textContent=errMsg(e);return}
  let ok=0,fail=0,last='';for(const c of batch){st.textContent=`جاري الإرسال ${ok+fail}/${batch.length}`;
   const b={name:c.u,password:c.p,profile:c.prof,comment:'AbuAmmarNet'};
   if(c.mode!=3)b['limit-uptime']=c.h+'h';if(c.mode==2)b.comment+=' first-login';if(c.g>0)b['limit-bytes-total']=String(Math.round(c.g*1073741824));
