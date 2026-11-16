@@ -119,6 +119,7 @@ canvas{width:100%;border:1px solid var(--ln);border-radius:12px;background:#fff}
 <button class="btn" style="margin:10px 0" onclick="addNet()">+ إضافة واي فاي (الاسم، الأدمن، كلمة السر)</button>
 <div id="nform" style="display:none;position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:calc(16px + env(safe-area-inset-top)) 16px 28px"><div style="max-width:640px;margin:auto"><h1>إضافة واي فاي</h1><div class="sub" style="margin-bottom:14px">أدخل بيانات دخول الراوتر عشان التطبيق يضيف الكروت</div><div class="card"><label>1. اسم الواي فاي</label><input id="nN" placeholder="مثال: شبكة الحي">
 <label>عنوان الراوتر (IP) مثال 192.168.88.1</label><input id="nI" value="192.168.88.1" dir="ltr">
+<button class="btn ghost" style="margin:0 0 10px" onclick="findIp()">جلب IP الراوتر تلقائياً</button>
 <div class="row"><div><label>2. اسم الأدمن</label><input id="nU" value="admin" dir="ltr"></div><div><label>3. كلمة سر الأدمن</label><input id="nP" type="password" dir="ltr"></div></div>
 <label>المنفذ (اتركه فارغاً للافتراضي 80)</label><input id="nT" type="number" dir="ltr">
 <button class="btn" onclick="saveNet()">حفظ</button><button class="btn ghost" onclick="saveNet(true)">حفظ واختبار الاتصال</button><button class="btn ghost" style="border-color:var(--mt);color:var(--mt)" onclick="$('nform').style.display='none'">إلغاء</button></div></div></div>
@@ -197,14 +198,24 @@ function editNet(i){const n=nets[i];editI=i;$('nN').value=n.name;$('nI').value=n
 function saveNet(t){let idx;const n=$('nN').value.trim(),ip=$('nI').value.trim();if(!n||!ip){toast('اكتب الاسم وعنوان الراوتر');return}
  const o={name:n,ip,user:$('nU').value.trim(),pass:$('nP').value,port:$('nT').value};if(editI>=0){cards.forEach(c=>{if(c.net==nets[editI].name)c.net=n});S('cards',cards);nets[editI]=o;idx=editI;editI=-1}else{nets.push(o);idx=nets.length-1}S('nets',nets);$('nform').style.display='none';$('nN').value='';renderNets();if(t)testNet(idx)}
 function delNet(i){if(confirm('حذف الشبكة؟')){nets.splice(i,1);S('nets',nets);renderNets()}}
+function localPrefix(){return new Promise(ok=>{try{const pc=new RTCPeerConnection({iceServers:[]});pc.createDataChannel('x');
+ pc.onicecandidate=e=>{if(!e.candidate)return;const m=/(192\.168\.\d+|10\.\d+\.\d+|172\.(?:1[6-9]|2\d|3[01])\.\d+)\.\d+/.exec(e.candidate.candidate);if(m){ok(m[1]);pc.close()}};
+ pc.createOffer().then(o=>pc.setLocalDescription(o));setTimeout(()=>ok(null),1500)}catch(e){ok(null)}})}
+async function findIp(){toast('جاري البحث عن الراوتر...');const pre=await localPrefix();
+ let c=['192.168.88.1','192.168.1.1','192.168.0.1','10.0.0.1','192.168.10.1','192.168.100.1','172.16.0.1','10.10.10.1'];if(pre)c.unshift(pre+'.1');c=[...new Set(c)];
+ window.TO=2500;let res;try{res=await Promise.all(c.map(async ip=>{const n={ip,user:'x',pass:'x',port:$('nT').value};try{await rr(n,'GET','/system/resource');return[ip,'ros']}catch(e){return[ip,e.code==401?'ros':e.code==-1?'web':null]}}))}finally{window.TO=0}
+ const ros=res.find(r=>r[1]=='ros'),web=res.find(r=>r[1]=='web');
+ if(ros){$('nI').value=ros[0];toast('تم العثور على مايكروتك: '+ros[0])}
+ else if(web){$('nI').value=web[0];toast('وجدت جهازاً يرد على '+web[0]+' لكنه لا يدعم REST، قد تكون نسخة v6')}
+ else toast('لم أجد راوتر. تأكد أن الجوال متصل بواي فاي الراوتر وأن خدمة www شغالة')}
 // MikroTik REST (RouterOS v7) - manual only, never automatic
 async function rr(n,m,path,body,auth){let r,t;
- try{r=await fetch(`http://${n.ip}${n.port?':'+n.port:''}/rest${path}`,{method:m,cache:'no-store',headers:{Authorization:'Basic '+btoa(auth||(n.user+':'+n.pass)),'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});t=typeof r.text=='function'?await r.text():JSON.stringify(r.data)}
- catch(e){const x=new Error('net');x.code=0;throw x}
+ try{r=await Promise.race([new Promise((_,no)=>setTimeout(()=>no(new Error('انتهت المهلة، الراوتر لا يرد')),window.TO||8000)),fetch(`http://${n.ip}${n.port?':'+n.port:''}/rest${path}`,{method:m,cache:'no-store',headers:{Authorization:'Basic '+btoa(auth||(n.user+':'+n.pass)),'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined})]);t=typeof r.text=='function'?await r.text():JSON.stringify(r.data)}
+ catch(e){const x=new Error(String((e&&e.message)||e));x.code=0;throw x}
  let j;try{j=JSON.parse(t)}catch(e){const x=new Error('رد غير متوقع (ليس من واجهة REST): '+String(t).slice(0,60));x.code=-1;throw x}
  const st=r.status;if(st>=400||(j&&!Array.isArray(j)&&j.error)){const x=new Error((j&&j.message)||('HTTP '+st));x.code=(j&&j.error)||st;throw x}
  return j}
-function errMsg(e){return e.code==401?'اسم المستخدم أو كلمة السر خطأ':e.code==0?'تعذر الوصول للراوتر: تأكد من IP وخدمة www، وأن التطبيق مثبّت كـ APK وليس مفتوحاً من المتصفح':e.code==-1?e.message:'رفض الراوتر: '+e.message}
+function errMsg(e){return e.code==401?'اسم المستخدم أو كلمة السر خطأ':e.code==0?'تعذر الوصول للراوتر ('+e.message+'). تأكد أن الجوال متصل بواي فاي الراوتر نفسه وأن IP صحيح وخدمة www شغالة':e.code==-1?e.message:'رفض الراوتر: '+e.message}
 async function verifyRouter(n){let fake=false;
  try{await rr(n,'GET','/system/resource',null,n.user+':'+code(10));fake=true}catch(e){if(e.code!=401)throw e}
  if(fake)throw Object.assign(new Error('اتصال وهمي: الرد جاء رغم كلمة سر عشوائية، فهو ليس رد راوتر حقيقي (غالباً صفحة الهوتسبوت أو جهاز آخر)'),{code:-1});
