@@ -1,275 +1,111 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>أبو عمار نت</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F2F5F9;--sf:#fff;--tx:#0E1B2C;--mt:#6B7A8D;--ln:#E1E7EF;--ac:#12B39A;--ac2:#0E8F7C;--wr:#E8A317;--rd:#E5484D}
-:root[data-t=dark]{--bg:#0A121D;--sf:#122033;--tx:#EAF1F8;--mt:#8DA0B6;--ln:#1E3048}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:Tajawal,system-ui,sans-serif;padding:env(safe-area-inset-top) 0 calc(76px + env(safe-area-inset-bottom))}
-svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.wrap{padding:16px;max-width:640px;margin:auto}
-h1{font-size:22px;margin:4px 0 2px;font-weight:800}h2{font-size:16px;margin:20px 0 10px}
-.sub{color:var(--mt);font-size:13px}
-.card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px}
-.banner{display:flex;background:var(--sf);border:1px solid var(--ln);border-radius:16px;margin:14px 0}
-.banner div{flex:1;text-align:center;padding:12px 4px}.banner div+div{border-inline-end:1px solid var(--ln)}
-.banner b{display:block;font-size:22px}.banner span{font-size:12px;color:var(--mt)}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.tile{background:none;border:0;color:var(--tx);font:inherit;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px 0}
-.tile i{width:52px;height:52px;border-radius:16px;border:1px solid var(--ln);background:color-mix(in srgb,var(--ac) 9%,transparent);display:grid;place-items:center;color:var(--ac)}
-.tile.soon{opacity:.5}
-.meter{display:flex;gap:8px}.meter div{flex:1;font-size:12px;color:var(--mt);text-align:center}
-.meter b{display:block;color:var(--tx);font-size:15px}
-nav{position:fixed;bottom:0;inset-inline:0;display:flex;background:var(--sf);border-top:1px solid var(--ln);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-nav button{flex:1;background:none;border:0;color:var(--mt);font:inherit;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px}
-nav button.on{color:var(--ac)}
-.pg{display:none}.pg.on{display:block}
-input,select{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:11px 12px;margin:4px 0 10px}
-label{font-size:13px;color:var(--mt)}
-.btn{width:100%;border:0;border-radius:14px;background:var(--ac);color:#fff;font:inherit;font-weight:700;padding:13px;margin-top:6px}
-.btn.ghost{background:none;color:var(--ac);border:1px solid var(--ac)}
-.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
-.mode{display:flex;gap:10px;align-items:center;border:1px solid var(--ln);border-radius:14px;padding:10px 12px;margin:6px 0;color:var(--tx)}
-.mode.on{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 8%,transparent)}
-.mode svg{color:var(--ac);flex:none}.mode small{display:block;color:var(--mt);font-size:11px}
-.li{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--ln)}.li:last-child{border:0}
-.li .n{flex:1}.li .n small{display:block;color:var(--mt);font-size:12px}
-.pill{font-size:11px;padding:3px 9px;border-radius:99px;border:1px solid var(--ln);color:var(--mt)}
-.pill.a{color:var(--ac);border-color:var(--ac)}.pill.x{color:var(--rd);border-color:var(--rd)}
-.fab{position:fixed;inset-inline-start:16px;bottom:calc(88px + env(safe-area-inset-bottom));height:52px;padding:0 20px;border-radius:26px;border:0;background:var(--ac);color:#fff;font:inherit;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(18,179,154,.35)}
-canvas{width:100%;border:1px solid var(--ln);border-radius:12px;background:#fff}
-.plan{border-inline-start:4px solid var(--ac)}.plan.m{border-color:var(--wr)}
-.plan b{font-size:16px}.plan p{margin:4px 0 0;color:var(--mt);font-size:13px}
-.toast{position:fixed;top:calc(12px + env(safe-area-inset-top));inset-inline:16px;background:var(--tx);color:var(--bg);padding:12px;border-radius:12px;text-align:center;display:none;z-index:9}
-</style></head><body>
-<svg width="0" height="0" style="position:absolute"><defs>
-<symbol id="home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10"/></symbol>
-<symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5M16 5.5a3 3 0 010 5.5M18 14c2 .6 3 2.2 3 5"/></symbol>
-<symbol id="ticket" viewBox="0 0 24 24"><path d="M3 8a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 000-4zM14 6v12" stroke-dasharray="2 2"/></symbol>
-<symbol id="print" viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"/></symbol>
-<symbol id="net" viewBox="0 0 24 24"><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M7 17h.01M11 17h.01M8 10a6 6 0 018 0M5.5 7.5a10 10 0 0113 0"/></symbol>
-<symbol id="plan" viewBox="0 0 24 24"><path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.4 6.8 19.2l1-5.9L3.5 9.2l5.9-.8z"/></symbol>
-<symbol id="set" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1.3l2-1.5-2-3.4-2.3.9a7 7 0 00-2.2-1.3L14 3h-4l-.4 2.4A7 7 0 007.4 6.7l-2.3-.9-2 3.4 2 1.5a7 7 0 000 2.6l-2 1.5 2 3.4 2.3-.9a7 7 0 002.2 1.3L10 21h4l.4-2.4a7 7 0 002.2-1.3l2.3.9 2-3.4-2-1.5c.1-.4.1-.9.1-1.3z"/></symbol>
-<symbol id="radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12l5-5"/></symbol>
-<symbol id="sig" viewBox="0 0 24 24"><path d="M4 20v-4M9 20v-8M14 20V8M19 20V4"/></symbol>
-<symbol id="money" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></symbol>
-<symbol id="dist" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M12 7.5V12M12 12l-6 4M12 12l6 4"/></symbol>
-<symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
-<symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.6 0l3-3a4 4 0 00-5.6-5.6l-1 1M14 10a4 4 0 00-5.6 0l-3 3a4 4 0 005.6 5.6l1-1"/></symbol>
-<symbol id="list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
-<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-<symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/></symbol>
-<symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></symbol>
-</defs></svg>
-<div class="toast" id="toast"></div>
-
-<!-- HOME -->
-<section class="pg on" id="p-home"><div class="wrap">
-<h1 id="greet"></h1><div class="sub">أبو عمار للرقمنة والحلول البرمجية</div>
-<div class="banner"><div><b id="sNew">0</b><span>غير مستخدم</span></div><div><b id="sAct" style="color:var(--ac)">0</b><span>متصل</span></div><div><b id="sExp" style="color:var(--rd)">0</b><span>منتهي</span></div></div>
-<div class="grid">
-<button class="tile" onclick="go('users')"><i><svg class="i"><use href="#users"/></svg></i>مستخدمو الهوتسبوت</button>
-<button class="tile" onclick="go('make')"><i><svg class="i"><use href="#ticket"/></svg></i>إنشاء كروت</button>
-<button class="tile" onclick="go('print')"><i><svg class="i"><use href="#print"/></svg></i>طباعة PDF</button>
-<button class="tile" onclick="go('nets')"><i><svg class="i"><use href="#net"/></svg></i>الشبكات</button>
-<button class="tile" onclick="radar()"><i><svg class="i"><use href="#radar"/></svg></i>الرادار</button>
-<button class="tile" onclick="quality()"><i><svg class="i"><use href="#sig"/></svg></i>جودة الإنترنت</button>
-<button class="tile soon" onclick="toast('المالية قريباً')"><i><svg class="i"><use href="#money"/></svg></i>المالية</button>
-<button class="tile soon" onclick="toast('الموزعون قريباً')"><i><svg class="i"><use href="#dist"/></svg></i>الموزعون</button>
+:root{--bg:#f1f5fb;--ink:#142235;--muted:#778391;--teal:#19ad9b;--line:#dce4eb;--red:#d84c58}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--ink)}
+header{padding:24px 22px 12px;text-align:right}h1{font-size:27px;margin:0 0 7px}header small{color:var(--muted);font-size:15px}
+main{padding:12px 18px 105px;max-width:900px;margin:auto}
+.stats,.panel{background:white;border:1px solid var(--line);border-radius:25px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);padding:17px 5px;margin-bottom:25px;text-align:center}
+.stats b{font-size:26px;display:block}.stats span{display:block;color:var(--muted);margin-top:8px}
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:24px 0 30px}
+.action{border:0;background:transparent;color:var(--ink);font:inherit;text-align:center;cursor:pointer}
+.action i{display:grid;place-items:center;width:78px;height:78px;margin:auto auto 8px;background:#e0f1f0;border-radius:25px;color:var(--teal);font-size:28px;font-style:normal}
+h2{font-size:20px;margin:22px 0 14px}.panel{padding:18px;margin-bottom:18px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input,select{width:100%;padding:13px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;background:#fff;color:var(--ink);margin:5px 0 12px}
+label{font-size:14px;color:#596675}
+button.primary{background:var(--teal);color:white;border:0;border-radius:30px;padding:13px 22px;font:bold 17px Tahoma;cursor:pointer}
+button.secondary{background:#fff;border:1px solid var(--line);border-radius:22px;padding:8px 15px;font:14px Tahoma;cursor:pointer}
+button.danger{color:var(--red);border-color:#e9b7bd}
+.status{padding:12px;border-radius:12px;background:#f4f7fa;color:#566574;margin:10px 0;white-space:pre-wrap;word-break:break-word}
+.status.ok{background:#e6f6f2;color:#087d6e}.status.err{background:#fff0f1;color:#a62e3b}
+.device{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding:13px 0}
+.device:last-child{border:0}.device strong{display:block;font-size:18px}.device small{color:var(--muted)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;text-align:center}
+.metrics b{display:block;font-size:20px}.metrics span{color:var(--muted);font-size:13px}
+.hidden{display:none}.nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:13px 4px;color:#788492;font-size:13px}
+.nav span{cursor:pointer;text-align:center}.nav .active{color:var(--teal)}
+@media(max-width:520px){.actions{grid-template-columns:repeat(4,1fr);gap:5px}.action i{width:62px;height:62px;border-radius:20px}.action{font-size:12px}.metrics{grid-template-columns:repeat(2,1fr);gap:16px}}
+</style></head>
+<body>
+<header><h1>صباح الخير</h1><small>أبو عمار للرقمنة والحلول البرمجية</small></header>
+<main>
+<div class="stats">
+ <div><b id="unused">—</b><span>غير مستخدم</span></div>
+ <div><b id="online" style="color:var(--teal)">—</b><span>متصل</span></div>
+ <div><b id="expired" style="color:var(--red)">—</b><span>منتهي</span></div>
 </div>
-<h2>حالة الجهاز</h2>
-<div class="card meter"><div><b id="mRam">-</b>الذاكرة</div><div><b id="mSto">-</b>التخزين</div><div><b id="mCpu">-</b>المعالج</div><div><b id="mNet">-</b>الشبكة</div></div>
-<div class="card" id="qbox" style="display:none;margin-top:10px"></div>
+<div class="actions">
+ <button class="action" onclick="show('networks')"><i>▱</i>الشبكات</button>
+ <button class="action" onclick="show('print')"><i>▤</i>طباعة PDF</button>
+ <button class="action" onclick="show('cards')"><i>▧</i>إنشاء كروت</button>
+ <button class="action" onclick="show('users')"><i>♙</i>مستخدمو الهوتسبوت</button>
+ <button class="action"><i>♧</i>الموزعون</button>
+ <button class="action"><i>▣</i>المالية</button>
+ <button class="action" onclick="refreshStatus()"><i>▥</i>جودة الإنترنت</button>
+ <button class="action" onclick="refreshStatus()"><i>◎</i>الراوتر</button>
+</div>
+
+<section id="networks">
+<h2>الشبكات</h2>
+<div class="panel">
+ <div id="networkList"><small style="color:var(--muted)">لم تتم إضافة راوتر بعد.</small></div>
+ <hr style="border:0;border-top:1px solid var(--line);margin:15px 0">
+ <h3>إضافة / اتصال براوتر MikroTik</h3>
+ <label>اسم الشبكة</label><input id="routerName" placeholder="مثال: راوتر المحل">
+ <label>عنوان IP أو اسم المضيف</label><input id="host" placeholder="192.168.88.1" value="192.168.88.1" dir="ltr">
+ <div class="row">
+  <div style="flex:1"><label>منفذ API</label><input id="port" value="8728" inputmode="numeric" dir="ltr"></div>
+  <div style="flex:1"><label>اسم المستخدم</label><input id="username" value="admin" dir="ltr"></div>
+ </div>
+ <label>كلمة المرور</label><input id="password" type="password" autocomplete="off">
+ <button class="primary" onclick="connectRouter()">اختبار الاتصال وحفظ الراوتر</button>
+ <div id="connectMsg" class="status">الاتصال يستخدم MikroTik RouterOS API على المنفذ 8728، وليس REST.</div>
+</div>
+</section>
+
+<section id="dashboard" class="hidden">
+<h2>حالة الجهاز</h2><div class="panel">
+ <div class="metrics">
+  <div><b id="ram">—</b><span>الذاكرة</span></div><div><b id="cpu">—</b><span>استخدام المعالج</span></div>
+  <div><b id="uptime">—</b><span>مدة التشغيل</span></div><div><b id="version">—</b><span>RouterOS</span></div>
+ </div><div id="statusMsg" class="status">اختر راوتراً ثم حدّث الحالة.</div>
+ <button class="primary" onclick="refreshStatus()">تحديث بيانات الراوتر</button>
 </div></section>
 
-<!-- USERS -->
-<section class="pg" id="p-users"><div class="wrap"><h1>مستخدمو الهوتسبوت</h1>
-<div class="sub">الحالة تُحدّث يدوياً، التطبيق لا يتصل بالمايكروتك</div>
-<div class="card" id="ulist" style="margin-top:12px"></div></div></section>
-
-<!-- MAKE -->
-<section class="pg" id="p-make"><div class="wrap"><h1>إنشاء كروت</h1>
-<label>الشبكة</label><select id="mkNet"></select>
-<button class="btn ghost" style="margin:0 0 10px" onclick="go('nets');addNet()">+ إضافة واي فاي جديد</button>
-<div class="row"><div><label>العدد</label><input id="mkN" type="number" value="50" min="1" max="1000"></div><div><label>طول الكود</label><input id="mkL" type="number" value="6" min="4" max="12"></div></div>
-<div class="row"><div><label>المدة (ساعات)</label><input id="mkH" type="number" value="24"></div><div><label>الحجم (GB)</label><input id="mkG" type="number" value="0"></div></div>
-<label>اسم البروفايل في المايكروتك</label><input id="mkP" value="default" dir="ltr">
-<label>طريقة احتساب الزمن</label><div id="modes"></div>
-<button class="btn" onclick="makeCards()">إنشاء الكروت</button>
-<div class="card" id="mkOut" style="display:none;margin-top:12px;text-align:center"></div></div></section>
-
-<!-- PRINT -->
-<section class="pg" id="p-print"><div class="wrap"><h1>طباعة الكروت</h1>
-<div class="sub">صفحة A4 تتسع لـ 100 كرت</div>
-<canvas id="pv" width="620" height="220" style="margin:12px 0"></canvas>
-<label>العنوان أعلى الكرت</label><input id="tT" value="شبكة أبو عمار">
-<label>اسم النشاط</label><input id="tB" value="أبو عمار نت">
-<label>واتساب</label><input id="tW" value="+249 000 000 000">
-<label>نص الخانة الفارغة</label><input id="tX" value="">
-<div class="row"><div><label>حجم الخط</label><input id="tS" type="range" min="70" max="140" value="100"></div><div><label>كروت في الصف</label><select id="tC"><option>4</option><option selected>5</option><option>10</option></select></div></div>
-<label>لون الكرت</label><input id="tK" type="color" value="#12B39A" style="height:44px;padding:4px">
-<label>اسم الملف</label><input id="tF" value="cards">
-<button class="btn" onclick="exportPdf(true)">مشاركة PDF</button>
-<button class="btn ghost" onclick="exportPdf(false)">فتح / حفظ PDF</button></div></section>
-
-<!-- NETS -->
-<section class="pg" id="p-nets"><div class="wrap"><h1>الشبكات</h1>
-<button class="btn" style="margin:10px 0" onclick="addNet()">+ إضافة واي فاي (الاسم، الأدمن، كلمة السر)</button>
-<div id="nform" style="display:none;position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:calc(16px + env(safe-area-inset-top)) 16px 28px"><div style="max-width:640px;margin:auto"><h1>إضافة واي فاي</h1><div class="sub" style="margin-bottom:14px">أدخل بيانات دخول الراوتر عشان التطبيق يضيف الكروت</div><div class="card"><label>1. اسم الواي فاي</label><input id="nN" placeholder="مثال: شبكة الحي">
-<label>عنوان الراوتر (IP) مثال 192.168.88.1</label><input id="nI" value="192.168.88.1" dir="ltr">
-<button class="btn ghost" style="margin:0 0 10px" onclick="findIp()">جلب IP الراوتر تلقائياً</button>
-<div class="row"><div><label>2. اسم الأدمن</label><input id="nU" value="admin" dir="ltr"></div><div><label>3. كلمة سر الأدمن</label><input id="nP" type="password" dir="ltr"></div></div>
-<label>المنفذ (اتركه فارغاً للافتراضي 80)</label><input id="nT" type="number" dir="ltr">
-<button class="btn" onclick="saveNet()">حفظ</button><button class="btn ghost" onclick="saveNet(true)">حفظ واختبار الاتصال</button><button class="btn ghost" style="border-color:var(--mt);color:var(--mt)" onclick="$('nform').style.display='none'">إلغاء</button></div></div></div>
-<div class="card" id="nlist" style="margin-top:12px"></div></div>
-<button class="fab" onclick="addNet()"><svg class="i"><use href="#plus"/></svg>شبكة جديدة</button></section>
-
-<!-- PLANS -->
-<section class="pg" id="p-plan"><div class="wrap"><h1>الباقات</h1>
-<div class="card plan" style="margin-top:12px"><b>أساسي</b><p>للشبكات الصغيرة، 30 يوم، راوتر واحد</p></div>
-<div class="card plan" style="margin-top:10px"><b>احترافي</b><p>للشبكات المتوسطة، 30 يوم، 3 راوتر</p></div>
-<div class="card plan m" style="margin-top:10px"><b>ماكس</b><p>للشركات والموزعين، 30 يوم، 5 راوتر</p></div>
-<div class="card plan m" style="margin-top:10px"><b>سنوي</b><p>غير محدود، 365 يوم</p></div>
-<h2>خدمات</h2>
-<div class="card plan"><b>برمجة مايكروتك</b><p>جديد أو بعد الفرمطة، 30 يوم</p></div>
-<div class="card plan" style="margin-top:10px"><b>برمجة أنتينات</b><p>30 يوم</p></div>
-<h2>كود التفعيل</h2>
-<div class="card" id="actBox"></div></div></section>
-
-<!-- SETTINGS -->
-<section class="pg" id="p-set"><div class="wrap"><h1>الإعدادات</h1>
-<label>المظهر</label>
-<select id="sTheme" onchange="setTheme(this.value)"><option value="system">النظام</option><option value="light">فاتح</option><option value="dark">داكن</option></select>
-<label>طريقة احتساب الزمن الافتراضية</label><div id="modes2"></div>
-<h2>من نحن</h2>
-<div class="card"><b>أبو عمار للرقمنة والحلول البرمجية</b><p class="sub" style="margin:6px 0 0">تفعيل ستارلينك، دفع المواقع، إدارة كروت المايكروتك، وبرمجة الأنتينات.</p></div></div></section>
-
-<nav id="nav">
-<button data-p="home" class="on"><svg class="i"><use href="#home"/></svg>الرئيسية</button>
-<button data-p="make"><svg class="i"><use href="#ticket"/></svg>الكروت</button>
-<button data-p="print"><svg class="i"><use href="#print"/></svg>طباعة</button>
-<button data-p="nets"><svg class="i"><use href="#net"/></svg>الشبكات</button>
-<button data-p="plan"><svg class="i"><use href="#plan"/></svg>الباقات</button>
-<button data-p="set"><svg class="i"><use href="#set"/></svg>الإعدادات</button>
-</nav>
+<section id="users" class="hidden"><h2>مستخدمو الهوتسبوت</h2><div class="panel">
+ <button class="primary" onclick="loadUsers()">تحميل المستخدمين</button><div id="usersList" class="status">لم يتم تحميل البيانات.</div>
+</div></section>
+<section id="cards" class="hidden"><h2>إنشاء كرت هوتسبوت</h2><div class="panel">
+ <label>اسم المستخدم / الكرت</label><input id="newUser" placeholder="card001" dir="ltr">
+ <label>كلمة المرور</label><input id="newPass" placeholder="12345" dir="ltr">
+ <label>المدة (مثال: 1h أو 1d أو 7d)</label><input id="newLimit" placeholder="1d" dir="ltr">
+ <button class="primary" onclick="addUser()">إنشاء الكرت على الراوتر</button><div id="cardMsg" class="status"></div>
+</div></section>
+<section id="print" class="hidden"><h2>الطباعة</h2><div class="panel">يمكن طباعة الصفحة أو حفظها PDF من قائمة المتصفح بعد تحميل بيانات الكروت.<br><button class="primary" onclick="window.print()">طباعة / حفظ PDF</button></div></section>
+</main>
+<nav class="nav"><span onclick="show('dashboard')">⌂<br>الرئيسية</span><span onclick="show('cards')">▧<br>الكروت</span><span onclick="show('users')">♙<br>المستخدمون</span><span onclick="show('networks')" class="active">▱<br>الشبكات</span><span>⚙<br>الإعدادات</span></nav>
 <script>
+let routers=[], active=null;
 const $=id=>document.getElementById(id);
-const L=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}};
-const S=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-let lastBatch=[],cards=L('cards',[]),nets=L('nets',[]).map(n=>typeof n=='string'?{name:n,ip:'192.168.88.1',user:'admin',pass:'',port:''}:n),cfg=L('cfg',{theme:'system',mode:1}),act=L('act',null),mode=cfg.mode;
-const MODES=[[1,'clock','استخدام فعلي','يُحسب الزمن أثناء الاتصال فقط'],[2,'link','متواصل من أول دخول','يبدأ العد من أول اتصال حتى لو انقطع'],[3,'list','حسب البروفايل','يتبع إعدادات البروفايل في المايكروتك']];
-function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2200)}
-function go(p){document.querySelectorAll('.pg').forEach(e=>e.classList.toggle('on',e.id=='p-'+p));
- document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.p==p));
- if(p=='print')draw();if(p=='users')renderUsers();if(p=='make')fillNets();scrollTo(0,0)}
-document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
-function setTheme(v){cfg.theme=v;S('cfg',cfg);const d=v=='dark'||(v=='system'&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.dataset.t=d?'dark':'light'}
-matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>setTheme(cfg.theme));
-$('sTheme').value=cfg.theme;setTheme(cfg.theme);
-function renderModes(){['modes','modes2'].forEach(id=>{$(id).innerHTML=MODES.map(m=>`<div class="mode ${m[0]==mode?'on':''}" onclick="pick(${m[0]})"><svg class="i"><use href="#${m[1]}"/></svg><div>${m[2]}<small>${m[3]}</small></div></div>`).join('')})}
-function pick(m){mode=m;cfg.mode=m;S('cfg',cfg);renderModes()}
-renderModes();
-function greet(){const h=new Date().getHours();$('greet').textContent=h<12?'صباح الخير':'مساء الخير'}
-function stats(){$('sNew').textContent=cards.filter(c=>c.st=='new').length;$('sAct').textContent=cards.filter(c=>c.st=='act').length;$('sExp').textContent=cards.filter(c=>c.st=='exp').length}
-async function meters(){$('mRam').textContent=navigator.deviceMemory?navigator.deviceMemory+' GB':'-';
- $('mCpu').textContent=navigator.hardwareConcurrency?navigator.hardwareConcurrency+' نواة':'-';
- try{const e=await navigator.storage.estimate();$('mSto').textContent=Math.round(e.usage/1048576)+' MB'}catch(x){$('mSto').textContent='-'}
- const c=navigator.connection;$('mNet').textContent=c?(c.effectiveType||'-').toUpperCase():(navigator.onLine?'متصل':'لا')}
-function quality(){const c=navigator.connection,b=$('qbox');b.style.display='block';
- b.innerHTML=c?`النوع: ${c.effectiveType}<br>السرعة التقريبية: ${c.downlink} Mbps<br>التأخر: ${c.rtt} ms`:'المتصفح لا يوفر بيانات الجودة'}
-function radar(){toast('الرادار قيد التطوير')}
-function code(n){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';const r=crypto.getRandomValues(new Uint8Array(n));for(const x of r)s+=a[x%a.length];return s}
-function fillNets(){$('mkNet').innerHTML=nets.length?nets.map(n=>`<option>${n.name}</option>`).join(''):'<option>الشبكة الافتراضية</option>'}
-function makeCards(){const n=+$('mkN').value,l=+$('mkL').value,net=$('mkNet').value,t=new Date();
- const add=[];for(let i=0;i<n;i++)add.push({id:Date.now()+i,u:code(l),p:code(l),net,h:+$('mkH').value,g:+$('mkG').value,prof:$('mkP').value.trim()||'default',mode,st:'new',sent:0});
- cards=cards.concat(add);lastBatch=add.map(c=>c.id);S('cards',cards);stats();
- const hh=String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
- const o=$('mkOut');o.style.display='block';o.innerHTML=`<div style="font-size:32px;font-weight:800;color:var(--ac)">${n}</div>تم الإنشاء الساعة ${hh}<button class="btn" onclick="sendCards()">إضافة مباشرة للمايكروتك (v7)</button><button class="btn ghost" onclick="exportRsc()">تصدير ملف للراوتر (كل النسخ)</button><div class="sub" id="sendSt" style="margin-top:8px"></div>`}
-function renderUsers(){const e=$('ulist');if(!cards.length){e.innerHTML='<div class="sub" style="padding:12px;text-align:center">لا توجد كروت بعد. أنشئ كروتاً من تبويب الكروت.</div>';return}
- const nm={new:['جديد',''],act:['متصل','a'],exp:['منتهي','x']};
- e.innerHTML=cards.slice(-100).reverse().map(c=>`<div class="li"><div class="n">${c.u}<small>${c.net}، ${c.h} ساعة</small></div><span class="pill ${nm[c.st][1]}" onclick="cyc(${c.id})">${nm[c.st][0]}</span></div>`).join('')}
-function cyc(id){const c=cards.find(x=>x.id==id),o=['new','act','exp'];c.st=o[(o.indexOf(c.st)+1)%3];S('cards',cards);stats();renderUsers()}
-function renderNets(){$('nlist').innerHTML=nets.length?nets.map((n,i)=>`<div class="li"><svg class="i" style="color:var(--ac)"><use href="#net"/></svg><div class="n">${n.name}<small dir="ltr" style="text-align:right">${n.ip}، ${cards.filter(c=>c.net==n.name).length} كرت</small></div><span class="pill a" onclick="testNet(${i})">اختبار</span><span class="pill" onclick="editNet(${i})">تعديل</span><span class="pill x" onclick="delNet(${i})">حذف</span></div>`).join(''):'<div style="padding:24px 12px;text-align:center"><svg class="i" style="width:48px;height:48px;color:var(--ac)"><use href="#net"/></svg><div style="font-weight:700;margin:8px 0">لا توجد شبكات بعد</div><div class="sub">اضغط الزر الأخضر بالأعلى لإضافة أول واي فاي</div></div>'}
-let editI=-1;
-function addNet(){editI=-1;['nN','nP','nT'].forEach(k=>$(k).value='');$('nI').value='192.168.88.1';$('nU').value='admin';$('nform').style.display='block';$('nN').focus();scrollTo(0,0)}
-function editNet(i){const n=nets[i];editI=i;$('nN').value=n.name;$('nI').value=n.ip;$('nU').value=n.user;$('nP').value=n.pass;$('nT').value=n.port||'';$('nform').style.display='block';scrollTo(0,0)}
-function saveNet(t){let idx;const n=$('nN').value.trim(),ip=$('nI').value.trim();if(!n||!ip){toast('اكتب الاسم وعنوان الراوتر');return}
- const o={name:n,ip,user:$('nU').value.trim(),pass:$('nP').value,port:$('nT').value};if(editI>=0){cards.forEach(c=>{if(c.net==nets[editI].name)c.net=n});S('cards',cards);nets[editI]=o;idx=editI;editI=-1}else{nets.push(o);idx=nets.length-1}S('nets',nets);$('nform').style.display='none';$('nN').value='';renderNets();if(t)testNet(idx)}
-function delNet(i){if(confirm('حذف الشبكة؟')){nets.splice(i,1);S('nets',nets);renderNets()}}
-function localPrefix(){return new Promise(ok=>{try{const pc=new RTCPeerConnection({iceServers:[]});pc.createDataChannel('x');
- pc.onicecandidate=e=>{if(!e.candidate)return;const m=/(192\.168\.\d+|10\.\d+\.\d+|172\.(?:1[6-9]|2\d|3[01])\.\d+)\.\d+/.exec(e.candidate.candidate);if(m){ok(m[1]);pc.close()}};
- pc.createOffer().then(o=>pc.setLocalDescription(o));setTimeout(()=>ok(null),1500)}catch(e){ok(null)}})}
-async function findIp(){toast('جاري البحث عن الراوتر...');const pre=await localPrefix();
- let c=['192.168.88.1','192.168.1.1','192.168.0.1','10.0.0.1','192.168.10.1','192.168.100.1','172.16.0.1','10.10.10.1'];if(pre)c.unshift(pre+'.1');c=[...new Set(c)];
- window.TO=2500;let res;try{res=await Promise.all(c.map(async ip=>{const n={ip,user:'x',pass:'x',port:$('nT').value};try{await rr(n,'GET','/system/resource');return[ip,'ros']}catch(e){return[ip,e.code==401?'ros':e.code==-1?'web':null]}}))}finally{window.TO=0}
- const ros=res.find(r=>r[1]=='ros'),web=res.find(r=>r[1]=='web');
- if(ros){$('nI').value=ros[0];toast('تم العثور على مايكروتك: '+ros[0])}
- else if(web){$('nI').value=web[0];toast('وجدت جهازاً يرد على '+web[0]+' لكنه لا يدعم REST، قد تكون نسخة v6')}
- else toast('لم أجد راوتر. تأكد أن الجوال متصل بواي فاي الراوتر وأن خدمة www شغالة')}
-let lastRsc='';
-function buildRsc(b){return b.map(c=>{let l=`/ip hotspot user add name=${c.u} password=${c.p} profile="${c.prof}" comment=AbuAmmarNet`;if(c.mode!=3)l+=` limit-uptime=${c.h}h`;if(c.g>0)l+=` limit-bytes-total=${Math.round(c.g*1073741824)}`;return l}).join('\n')}
-function showRsc(b,msg){lastRsc=buildRsc(b);$('sendSt').innerHTML=`${msg}<div class="row" style="margin-top:8px"><button class="btn ghost" onclick="rscCopy()">نسخ الأوامر</button><button class="btn ghost" onclick="rscFile()">حفظ / مشاركة ملف</button></div><div class="sub" style="margin-top:8px;text-align:right">الطريقة: Winbox ثم New Terminal والصق الأوامر. أو ارفع الملف من Files ونفذ: /import file-name=اسم_الملف</div>`}
-function exportRsc(){const b=cards.filter(c=>lastBatch.includes(c.id));if(!b.length){toast('لا توجد كروت');return}showRsc(b,`جاهز: ${b.length} كرت`)}
-function rscCopy(){navigator.clipboard.writeText(lastRsc).then(()=>toast('تم النسخ'),()=>toast('تعذر النسخ، استخدم الملف'))}
-async function rscFile(){const name=($('tF').value.trim()||'cards')+'.rsc',f=new File([lastRsc],name,{type:'text/plain'});
- if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:name});return}catch(e){}}
- const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=name;a.click();toast('تم إنشاء '+name)}
-// MikroTik REST (RouterOS v7) - manual only, never automatic
-async function rr(n,m,path,body,auth){let r,t;
- try{r=await Promise.race([new Promise((_,no)=>setTimeout(()=>no(new Error('انتهت المهلة، الراوتر لا يرد')),window.TO||8000)),fetch(`http://${n.ip}${n.port?':'+n.port:''}/rest${path}`,{method:m,cache:'no-store',headers:{Authorization:'Basic '+btoa(auth||(n.user+':'+n.pass)),'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined})]);t=typeof r.text=='function'?await r.text():JSON.stringify(r.data)}
- catch(e){const x=new Error(String((e&&e.message)||e));x.code=0;throw x}
- let j;try{j=JSON.parse(t)}catch(e){const x=new Error('رد غير متوقع (ليس من واجهة REST): '+String(t).slice(0,60));x.code=(r.status==404?404:-1);throw x}
- const st=r.status;if(st>=400||(j&&!Array.isArray(j)&&j.error)){const x=new Error((j&&j.message)||('HTTP '+st));x.code=(j&&j.error)||st;throw x}
- return j}
-function errMsg(e){return e.code==404?'الراوتر لا يدعم REST (RouterOS v6): استخدم تصدير ملف .rsc':e.code==401?'اسم المستخدم أو كلمة السر خطأ':e.code==0?'تعذر الوصول للراوتر ('+e.message+'). تأكد أن الجوال متصل بواي فاي الراوتر نفسه وأن IP صحيح وخدمة www شغالة':e.code==-1?e.message:'رفض الراوتر: '+e.message}
-async function verifyRouter(n){let fake=false;
- try{await rr(n,'GET','/system/resource',null,n.user+':'+code(10));fake=true}catch(e){if(e.code!=401)throw e}
- if(fake)throw Object.assign(new Error('اتصال وهمي: الرد جاء رغم كلمة سر عشوائية، فهو ليس رد راوتر حقيقي (غالباً صفحة الهوتسبوت أو جهاز آخر)'),{code:-1});
- const r=await rr(n,'GET','/system/resource');if(!r.version)throw Object.assign(new Error('الرد لا يحتوي بيانات راوتر'),{code:-1});return r}
-async function testNet(i){const n=nets[i];toast('جاري الاتصال...');try{const r=await verifyRouter(n);toast('تم الاتصال: '+(r['board-name']||'راوتر')+' - RouterOS '+r.version)}catch(e){toast(errMsg(e))}}
-async function sendCards(){const st=$('sendSt'),batch=cards.filter(c=>lastBatch.includes(c.id)&&!c.sent);if(!batch.length){st.textContent='لا توجد كروت جديدة للإرسال';return}
- const n=nets.find(x=>x.name==batch[0].net);if(!n){st.textContent='اختر شبكة محفوظة فيها بيانات الراوتر';return}
- st.textContent='جاري التحقق من الراوتر...';try{await verifyRouter(n)}catch(e){if(e.code==404){showRsc(batch,'الراوتر نسخة قديمة (v6) لا يدعم الإضافة المباشرة. استخدم الملف:');return}st.textContent=errMsg(e);return}
- let ok=0,fail=0,last='';for(const c of batch){st.textContent=`جاري الإرسال ${ok+fail}/${batch.length}`;
-  const b={name:c.u,password:c.p,profile:c.prof,comment:'AbuAmmarNet'};
-  if(c.mode!=3)b['limit-uptime']=c.h+'h';if(c.mode==2)b.comment+=' first-login';if(c.g>0)b['limit-bytes-total']=String(Math.round(c.g*1073741824));
-  try{const r=await rr(n,'PUT','/ip/hotspot/user',b);if(!r['.id'])throw Object.assign(new Error('لم يرجع الراوتر رقم الكرت'),{code:-1});c.sent=1;ok++}catch(e){fail++;last=errMsg(e);if(e.code==401||e.code==0)break}}
- S('cards',cards);
- let ver='';try{const l=await rr(n,'GET','/ip/hotspot/user?comment=AbuAmmarNet');ver=`، الموجود فعلياً في الراوتر ${l.length}`}catch(e){}
- st.textContent=`تمت إضافة ${ok} كرت`+(fail?`، فشل ${fail}: ${last}`:'')+ver}
-// card drawing
-function T(){return{t:$('tT').value,b:$('tB').value,w:$('tW').value,x:$('tX').value,s:$('tS').value/100,k:$('tK').value}}
-function drawCard(c,x,y,w,h,card,t){const f=h/110*t.s;c.save();c.translate(x,y);c.fillStyle='#fff';c.fillRect(0,0,w,h);c.strokeStyle='#222';c.lineWidth=Math.max(1,h/90);c.strokeRect(0,0,w,h);
- c.beginPath();c.moveTo(0,h*.3);c.lineTo(w,h*.3);c.moveTo(0,h*.65);c.lineTo(w,h*.65);c.moveTo(w/2,h*.3);c.lineTo(w/2,h);c.stroke();
- c.fillStyle=t.k;c.fillRect(0,0,w,h*.3);c.fillStyle='#fff';c.textAlign='center';c.textBaseline='middle';c.direction='rtl';
- c.font=`700 ${22*f}px Tajawal,sans-serif`;c.fillText(t.t,w/2,h*.15,w*.7);
- c.strokeStyle='#fff';c.lineWidth=Math.max(1,h/60);for(const cx of [w*.09,w*.91]){for(let r=1;r<=3;r++){c.beginPath();c.arc(cx,h*.22,r*h*.035,Math.PI*1.2,Math.PI*1.8);c.stroke()}}
- c.fillStyle='#111';c.font=`700 ${20*f}px Tajawal,monospace`;c.fillText(card.u,w*.25,h*.475,w*.45);c.fillText(card.p,w*.75,h*.475,w*.45);
- c.fillStyle='#555';c.font=`500 ${14*f}px Tajawal,sans-serif`;c.fillText(t.b,w*.25,h*.77,w*.45);c.fillText(t.w,w*.25,h*.9,w*.45);c.fillText(t.x,w*.75,h*.82,w*.45);c.restore()}
-function draw(){const cv=$('pv'),c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);drawCard(c,10,10,cv.width-20,cv.height-20,{u:'AB12CD',p:'XY98ZK'},T())}
-document.querySelectorAll('#p-print input,#p-print select').forEach(e=>e.oninput=draw);
-async function exportPdf(share){
- if(!cards.length){toast('أنشئ كروتاً أولاً');return}
- toast('جاري إنشاء الملف');
- if(!window.jspdf)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';s.onload=ok;s.onerror=no;document.head.appendChild(s)}).catch(()=>{toast('تعذر تحميل مكتبة PDF، تأكد من الإنترنت')});
- if(!window.jspdf)return;
- const t=T(),cols=+$('tC').value,rows=100/cols,W=1240,H=1754,cw=W/cols,ch=H/rows;
- const pdf=new jspdf.jsPDF({unit:'mm',format:'a4'}),cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d');
- const pages=Math.ceil(cards.length/100);
- for(let p=0;p<pages;p++){c.fillStyle='#fff';c.fillRect(0,0,W,H);
-  cards.slice(p*100,p*100+100).forEach((cd,i)=>drawCard(c,(i%cols)*cw,Math.floor(i/cols)*ch,cw,ch,cd,t));
-  if(p)pdf.addPage();pdf.addImage(cv.toDataURL('image/jpeg',.92),'JPEG',0,0,210,297)}
- const name=($('tF').value.trim()||'cards').replace(/[\\/:*?"<>|]/g,'_')+'.pdf',blob=pdf.output('blob'),file=new File([blob],name,{type:'application/pdf'});
- if(share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:name});return}catch(e){}}
- const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();toast('تم إنشاء '+name)}
-// activation: one device only
-function devId(){let d=L('dev',null);if(!d){d=code(12);S('dev',d)}return d}
-function renderAct(){const b=$('actBox');
- if(act){b.innerHTML='<div class="row" style="color:var(--ac)"><svg class="i" style="flex:none;width:24px"><use href="#key"/></svg><b>التطبيق مفعّل على هذا الجهاز</b></div>';return}
- b.innerHTML='<label>أدخل الكود</label><input id="actIn" placeholder="XXXX-XXXX"><button class="btn" onclick="doAct()">تفعيل</button>'}
-function doAct(){const v=$('actIn').value.trim();if(v.length<6){toast('الكود غير صحيح');return}
- act={dev:devId(),at:Date.now()};S('act',act);renderAct();toast('تم التفعيل')}
-greet();stats();meters();renderNets();renderAct();draw();
+function show(id){['networks','dashboard','users','cards','print'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
+function msg(id,text,type=''){const e=$(id);e.textContent=text;e.className='status '+type;}
+function renderRouters(){ $('networkList').innerHTML=routers.length?routers.map((r,i)=>`<div class="device"><div><strong>${esc(r.name||r.host)}</strong><small dir="ltr">${esc(r.host)}:${r.port}</small></div><div class="row"><button class="secondary" onclick="selectRouter(${i})">اختيار</button><button class="secondary danger" onclick="removeRouter(${i})">حذف</button></div></div>`).join(''):'<small>لم تتم إضافة راوتر بعد.</small>'; }
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function api(path,body){const res=await fetch('/api'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});const data=await res.json();if(!res.ok||!data.ok)throw Error(data.error||'فشل الطلب');return data;}
+async function connectRouter(){
+ const r={name:$('routerName').value.trim(),host:$('host').value.trim(),port:Number($('port').value||8728),username:$('username').value.trim(),password:$('password').value};
+ if(!r.host||!r.username){msg('connectMsg','أدخل عنوان الراوتر واسم المستخدم.','err');return;}
+ msg('connectMsg','جارٍ اختبار الاتصال الفعلي...');try{const d=await api('/connect',r);r.id=d.id;routers=routers.filter(x=>x.id!==r.id);routers.push(r);active=r;renderRouters();msg('connectMsg','تم الاتصال بنجاح: '+(d.identity||r.host)+' — '+(d.version||'RouterOS'),'ok');await refreshStatus();}catch(e){msg('connectMsg',e.message,'err');}
+}
+function selectRouter(i){active=routers[i];refreshStatus();show('dashboard');}
+function removeRouter(i){if(active&&active.id===routers[i].id)active=null;routers.splice(i,1);renderRouters();}
+async function refreshStatus(){if(!active){msg('statusMsg','أضف راوتراً واتصل به أولاً.','err');return;}try{const d=await api('/status',{id:active.id});$('ram').textContent=d.freeMemory&&d.totalMemory?Math.round((1-d.freeMemory/d.totalMemory)*100)+'% مستخدم':'—';$('cpu').textContent=(d.cpuLoad??'—')+'%';$('uptime').textContent=d.uptime||'—';$('version').textContent=d.version||'—';$('online').textContent=d.hotspotActive??'—';$('unused').textContent=d.hotspotUsers??'—';msg('statusMsg','تم جلب البيانات مباشرة من الراوتر '+(d.identity||''),'ok');}catch(e){msg('statusMsg',e.message,'err');}}
+async function loadUsers(){if(!active){msg('usersList','اختر راوتراً أولاً.','err');return;}try{const d=await api('/users',{id:active.id});$('usersList').innerHTML=d.users.length?d.users.map(u=>`<div class="device"><div><strong>${esc(u.name)}</strong><small>${esc(u.profile||'بدون بروفايل')} — ${esc(u.disabled||'')}</small></div></div>`).join(''):'لا يوجد مستخدمون.';}catch(e){msg('usersList',e.message,'err');}}
+async function addUser(){if(!active){msg('cardMsg','اختر راوتراً أولاً.','err');return;}try{await api('/user/add',{id:active.id,name:$('newUser').value,password:$('newPass').value,limit:$('newLimit').value});msg('cardMsg','تم إنشاء المستخدم على الراوتر بنجاح.','ok');}catch(e){msg('cardMsg',e.message,'err');}}
+renderRouters();
 </script></body></html>
